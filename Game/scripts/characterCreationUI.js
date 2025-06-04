@@ -232,12 +232,8 @@ window.displayTrainingCarousel = function(trainings, selectedIdx = 0) {
   // Attach button events
   Array.from(document.getElementsByClassName('select-major-btn')).forEach(btn => {
     btn.onclick = () => {
-      // Pass the major and the school name to selectTraining
+      // Pass the school name, major name, attribute bonus, and skill to selectTraining
       const major = t.majors.find(m => m.name === btn.dataset.major);
-      // Pass training name, major name, attribute bonus and skill to the
-      // character creation logic. The previous code incorrectly omitted the
-      // major name and mis-ordered the arguments, which meant the selected
-      // major wasn't stored on the character.
       window.selectTraining(t.name, major.name, major.attribute, major.skill);
       // Move to next step (Persona builder)
       uiStep++;
