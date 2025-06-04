@@ -15,8 +15,10 @@ const __dirname = dirname(__filename);
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static(join(__dirname, 'public')));
+// Serve game assets before the public folder so requests like
+// /Game/css/styles.css resolve correctly
 app.use('/Game', express.static(join(__dirname, 'Game')));
+app.use(express.static(join(__dirname, 'public')));
 
 app.get('/', (req, res) => {
   res.sendFile(join(__dirname, 'public', 'index.html'));
