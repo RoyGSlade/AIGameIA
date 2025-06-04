@@ -27,6 +27,7 @@ const content = document.getElementById('carousel-content');
 const prompt = document.getElementById('prompt-text');
 const prevBtn = document.getElementById('prev-btn');
 const nextBtn = document.getElementById('next-btn');
+const stepBackBtn = document.getElementById('step-back-btn');
 const trainingPanel = document.getElementById('training-panel');
 const progressNav = document.getElementById('progress-nav');
 
@@ -60,12 +61,18 @@ prevBtn.onclick = () => {
   uiStep--;
   renderStep();
 };
+stepBackBtn.onclick = () => {
+  prevStep();
+  uiStep--;
+  renderStep();
+};
 
 function renderStep() {
   nextBtn.textContent = 'Next';
   prevBtn.textContent = 'Back';
   nextBtn.disabled = false;
   prevBtn.disabled = false;
+  stepBackBtn.style.display = uiStep === 0 ? 'none' : 'inline-block';
   trainingPanel.style.display = uiStep === 2 ? 'block' : 'none';
   updateProgressNav(uiStep);
   switch (uiStep) {
@@ -394,7 +401,7 @@ const personaFields = [
   { key: "hardship", label: "Hardship", options: () => personaData.hardships },
   { key: "goals", label: "Goals", options: () => personaData.goals.map(g => g.short + " / " + g.long) },
   { key: "empathy", label: "Empathy", options: () => personaData.empathy },
-  { key: "traits", label: "Traits", options: () => personaData.traits },
+  { key: "traits", label: "Traits", options: () => [] },
   { key: "contacts", label: "Contacts", options: () => personaData.contacts.map(c => `${c.name} (${c.relationship})`) },
   { key: "appearance", label: "Appearance", options: () => ["Build your character's look using appearance options below"] }
 ];
@@ -450,19 +457,19 @@ function showPersonaBuilder() {
     content.addEventListener('input', () => checkValid());
     content.addEventListener('change', () => checkValid());
   } else if (field.key === 'traits') {
-    const cats = {};
-    personaData.traits.forEach(t => { if(!cats[t.category]) cats[t.category] = []; cats[t.category].push(t.name); });
+    const cats = personaData.traits;
     const counter = document.createElement('div');
     counter.id = 'trait-count';
     counter.textContent = 'Selected: 0/5';
     content.appendChild(counter);
+    const container = document.createElement('div');
+    container.id = 'traits-container';
     const selected = new Set();
-    Object.keys(cats).forEach(cat => {
-      const sec = document.createElement('div');
-      sec.innerHTML = `<h4>${cat}</h4>`;
-      const row = document.createElement('div');
-      row.className = 'scroll-row';
-      cats[cat].forEach(name => {
+    ['positive','neutral','negative'].forEach(cat => {
+      const col = document.createElement('div');
+      col.className = 'trait-col';
+      col.innerHTML = `<h4>${cat.charAt(0).toUpperCase()+cat.slice(1)}</h4>`;
+      (cats[cat] || []).forEach(name => {
         const card = document.createElement('div');
         card.className = 'option-card';
         card.tabIndex = 0;
@@ -473,12 +480,12 @@ function showPersonaBuilder() {
           counter.textContent = `Selected: ${selected.size}/5`;
           checkValid();
         };
-        card.onkeydown = (e) => { if(e.key==='Enter') card.click(); };
-        row.appendChild(card);
+        card.onkeydown = e => { if(e.key==='Enter') card.click(); };
+        col.appendChild(card);
       });
-      sec.appendChild(row);
-      content.appendChild(sec);
+      container.appendChild(col);
     });
+    content.appendChild(container);
     validator = (checkOnly=false) => {
       if (!checkOnly) buildPersona.traits = Array.from(selected);
       return selected.size === 5;
@@ -561,6 +568,7 @@ function showPersonaBuilder() {
     const col = document.createElement('div');
     col.className = 'scroll-column';
     let chosen = null;
+    let customInput;
     field.options().forEach(opt => {
       const card = document.createElement('div');
       card.className = 'option-card';
@@ -570,7 +578,13 @@ function showPersonaBuilder() {
         if (chosen) chosen.classList.remove('selected');
         card.classList.add('selected');
         chosen = card;
-        checkValid();
+        const custom = customInput.value.trim();
+        buildPersona[field.key] = card.textContent;
+        if (custom === '') {
+          setTimeout(() => { personaStep++; showPersonaBuilder(); }, 200);
+        } else {
+          checkValid();
+        }
       };
       card.onkeydown = e => { if(e.key==='Enter') card.click(); };
       col.appendChild(card);
@@ -578,7 +592,7 @@ function showPersonaBuilder() {
     content.appendChild(col);
     const customLabel = document.createElement('label');
     customLabel.innerHTML = `Write your own:`;
-    const customInput = document.createElement('input');
+    customInput = document.createElement('input');
     customInput.id = `custom-${field.key}`;
     customInput.className = 'styled-input';
     customInput.placeholder = 'Your answer';
