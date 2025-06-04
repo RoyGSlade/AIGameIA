@@ -30,7 +30,7 @@ async function render() {
   if (state === 'characterCreation') {
     // Load character creation screen/module
     const html = document.createElement('iframe');
-    html.src = '/Game/character-creation.html';
+    html.src = 'Game/character-creation.html';
     html.style.width = '100%';
     html.style.height = '700px';
     html.style.border = 'none';
