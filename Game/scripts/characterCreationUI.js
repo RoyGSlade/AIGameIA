@@ -6,7 +6,7 @@ import {
   displayPersonaStep, displaySkillSystemStep, displaySuperpowerStep,
   displayEraStep, displaySummaryStep, finalizeCharacter,
   selectRace, selectProfession, selectTraining,
-  playerPersona
+  playerPersona, character
 } from './characterCreation.js';
 
 let personaData = null;
@@ -104,6 +104,8 @@ window.displayRaceCarousel = function (races) {
 
     const card = document.createElement('div');
     card.className = 'carousel-card neon-frame';
+    card.setAttribute('role','button');
+    card.tabIndex = 0;
     card.innerHTML = `
       <h2>${race.name}</h2>
       <p>${race.description}</p>
@@ -114,24 +116,23 @@ window.displayRaceCarousel = function (races) {
         <li>Age: ${race.age || "Not set"}</li>
         <li>Attribute Bonus: ${bonusVal ? "+" + bonusVal + " " + bonusKey.charAt(0).toUpperCase() + bonusKey.slice(1) : "None"}</li>
         <li>Special: ${race.special || "None"}</li>
-      </ul>
-      <button class="select-btn" data-idx="${i}">Select</button>
-    `;
+      </ul>`;
+    card.onclick = () => {
+      Array.from(content.getElementsByClassName('carousel-card')).forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      setTimeout(() => {
+        selectRace(race.name, race.age, race.skillChoice ? race.skillChoice[0] : null);
+        uiStep++;
+        currentIndex = 0;
+        renderStep();
+      }, 200);
+    };
+    card.ondblclick = () => { selectRace(race.name, race.age, race.skillChoice ? race.skillChoice[0] : null); uiStep++; currentIndex=0; renderStep(); };
+    card.onkeydown = (e) => { if (e.key==='Enter') card.click(); if (e.key==='Escape') { prevStep(); uiStep--; renderStep(); } };
     content.appendChild(card);
   }
 
-  // --- Handle Select ---
-  Array.from(document.getElementsByClassName('select-btn')).forEach(btn => {
-    btn.onclick = () => {
-      const idx = btn.dataset.idx;
-      const selectedRace = races[idx];
-      // Choose first skill or null, pick average age for demo
-      selectRace(selectedRace.name, selectedRace.age, selectedRace.skillChoice ? selectedRace.skillChoice[0] : null);
-      uiStep++;
-      currentIndex = 0; // Reset index for next carousel (optional)
-      renderStep();
-    };
-  });
+  // no separate select buttons
 
   // --- Control Prev/Next for Carousel Only ---
   prevBtn.disabled = currentIndex === 0;
@@ -176,6 +177,8 @@ window.displayProfessionCarousel = function (professions) {
       `<li>Level ${level}: ${desc}</li>`).join('');
     const card = document.createElement('div');
     card.className = 'carousel-card neon-frame';
+    card.setAttribute('role','button');
+    card.tabIndex = 0;
     card.innerHTML = `
       <h2>${prof.name}</h2>
       <p>${prof.description || ''}</p>
@@ -183,20 +186,16 @@ window.displayProfessionCarousel = function (professions) {
         <li>Starting Credits: ${prof.credits || ''}</li>
         <li>Passive: ${prof.passive || ''}</li>
         ${abilities}
-      </ul>
-      <button class="select-btn" data-idx="${i}">Select</button>
-    `;
+      </ul>`;
+    card.onclick = () => {
+      Array.from(content.getElementsByClassName('carousel-card')).forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      setTimeout(() => { selectProfession(prof.name); uiStep++; professionIndex=0; renderStep(); }, 200);
+    };
+    card.ondblclick = () => { selectProfession(prof.name); uiStep++; professionIndex=0; renderStep(); };
+    card.onkeydown = (e) => { if (e.key==='Enter') card.click(); if (e.key==='Escape'){ prevStep(); uiStep--; renderStep(); } };
     content.appendChild(card);
   }
-  Array.from(document.getElementsByClassName('select-btn')).forEach(btn => {
-    btn.onclick = () => {
-      const idx = btn.dataset.idx;
-      selectProfession(professions[idx].name);
-      uiStep++;
-      professionIndex = 0;
-      renderStep();
-    };
-  });
 
   prevBtn.disabled = professionIndex === 0;
   nextBtn.disabled = professionIndex >= professions.length - 2;
@@ -242,14 +241,13 @@ window.displayTrainingCarousel = function (trainings) {
   let right = `<div class="training-majors">`;
   t.majors.forEach((major, idx) => {
     right += `
-      <div class="major-card">
+      <div class="major-card" role="button" tabindex="0" data-major="${major.name}" data-training="${t.name}">
         <h3>${major.name}</h3>
         <p>${major.description || ''}</p>
         <ul>
           <li><b>Attribute Bonus:</b> +1 ${major.attribute.charAt(0).toUpperCase() + major.attribute.slice(1)}</li>
           <li><b>Skill Increase:</b> ${major.skill}</li>
         </ul>
-        <button class="select-major-btn" data-major="${major.name}" data-training="${t.name}">Select</button>
       </div>
     `;
   });
@@ -257,16 +255,15 @@ window.displayTrainingCarousel = function (trainings) {
 
   content.innerHTML = right;
 
-  // Attach button events
-  Array.from(document.getElementsByClassName('select-major-btn')).forEach(btn => {
-    btn.onclick = () => {
-      // Pass the school name, major name, attribute bonus, and skill to selectTraining
-      const major = t.majors.find(m => m.name === btn.dataset.major);
-      window.selectTraining(t.name, major.name, major.attribute, major.skill);
-      // Move to next step (Persona builder)
-      uiStep++;
-      renderStep();
+  Array.from(document.getElementsByClassName('major-card')).forEach(card => {
+    card.onclick = () => {
+      Array.from(document.getElementsByClassName('major-card')).forEach(c=>c.classList.remove('selected'));
+      card.classList.add('selected');
+      const major = t.majors.find(m => m.name === card.dataset.major);
+      setTimeout(() => { window.selectTraining(t.name, major.name, major.attribute, major.skill); uiStep++; renderStep(); }, 200);
     };
+    card.ondblclick = () => { const major = t.majors.find(m => m.name === card.dataset.major); window.selectTraining(t.name, major.name, major.attribute, major.skill); uiStep++; renderStep(); };
+    card.onkeydown = (e) => { if(e.key==='Enter') card.click(); if(e.key==='Escape'){ prevStep(); uiStep--; renderStep(); } };
   });
 
   // Configure carousel navigation using the global prev/next buttons
@@ -443,32 +440,78 @@ function showPersonaBuilder() {
     content.addEventListener('input', () => checkValid());
     content.addEventListener('change', () => checkValid());
   } else if (field.key === 'traits') {
-    content.innerHTML = personaData.traits.map(trait =>
-      `<label><input type="checkbox" name="trait" value="${trait}"> ${trait}</label>`
-    ).join('<br>');
+    const cats = {};
+    personaData.traits.forEach(t => { if(!cats[t.category]) cats[t.category] = []; cats[t.category].push(t.name); });
+    const counter = document.createElement('div');
+    counter.id = 'trait-count';
+    counter.textContent = 'Selected: 0/5';
+    content.appendChild(counter);
+    const selected = new Set();
+    Object.keys(cats).forEach(cat => {
+      const sec = document.createElement('div');
+      sec.innerHTML = `<h4>${cat}</h4>`;
+      const row = document.createElement('div');
+      row.className = 'scroll-row';
+      cats[cat].forEach(name => {
+        const card = document.createElement('div');
+        card.className = 'option-card';
+        card.tabIndex = 0;
+        card.textContent = name;
+        card.onclick = () => {
+          if (selected.has(name)) { selected.delete(name); card.classList.remove('selected'); }
+          else if (selected.size < 5) { selected.add(name); card.classList.add('selected'); }
+          counter.textContent = `Selected: ${selected.size}/5`;
+          checkValid();
+        };
+        card.onkeydown = (e) => { if(e.key==='Enter') card.click(); };
+        row.appendChild(card);
+      });
+      sec.appendChild(row);
+      content.appendChild(sec);
+    });
     validator = (checkOnly=false) => {
-      const vals = Array.from(document.querySelectorAll('input[name="trait"]:checked')).map(i => i.value);
-      if (!checkOnly) buildPersona.traits = vals;
-      return vals.length > 0;
+      if (!checkOnly) buildPersona.traits = Array.from(selected);
+      return selected.size === 5;
     };
-    content.addEventListener('change', () => checkValid());
   } else if (field.key === 'contacts') {
-    content.innerHTML = personaData.contacts.map((c,i) =>
-      `<label><input type="checkbox" name="contact" value="${i}"> ${c.name} (${c.relationship}): ${c.note}</label><br>`
-    ).join('');
+    const cats = {};
+    personaData.contacts.forEach((c,i) => { if(!cats[c.category]) cats[c.category] = []; cats[c.category].push({c,i}); });
+    const counter = document.createElement('div');
+    counter.id = 'contact-count';
+    counter.textContent = 'Selected: 0/3';
+    content.appendChild(counter);
+    const selected = new Set();
+    Object.keys(cats).forEach(cat => {
+      const sec = document.createElement('div');
+      sec.innerHTML = `<h4>${cat}</h4>`;
+      const row = document.createElement('div');
+      row.className = 'scroll-row';
+      cats[cat].forEach(obj => {
+        const card = document.createElement('div');
+        card.className = 'option-card';
+        card.tabIndex = 0;
+        card.textContent = `${obj.c.name}`;
+        card.onclick = () => {
+          if (selected.has(obj.i)) { selected.delete(obj.i); card.classList.remove('selected'); }
+          else if (selected.size < 3) { selected.add(obj.i); card.classList.add('selected'); }
+          counter.textContent = `Selected: ${selected.size}/3`;
+          checkValid();
+        };
+        card.onkeydown = (e)=>{ if(e.key==='Enter') card.click(); };
+        row.appendChild(card);
+      });
+      sec.appendChild(row);
+      content.appendChild(sec);
+    });
     validator = (checkOnly=false) => {
-      const vals = Array.from(document.querySelectorAll('input[name="contact"]:checked'))
-        .slice(0,3)
-        .map(i => personaData.contacts[i.value]);
-      if (!checkOnly) buildPersona.contacts = vals;
-      return vals.length > 0;
+      if(!checkOnly) buildPersona.contacts = Array.from(selected).map(i => personaData.contacts[i]);
+      return selected.size === 3;
     };
-    content.addEventListener('change', () => checkValid());
   } else if (field.key === 'goals') {
     content.innerHTML = `
       <label>Short-term Goal: <input id="goal-short" type="text" placeholder="Short-term goal"></label><br>
       <label>Long-term Goal: <input id="goal-long" type="text" placeholder="Long-term goal"></label><br>
-      <button id="random-goal">Random</button>
+      <button id="random-goal" class="select-btn">Random</button>
     `;
     document.getElementById('random-goal').onclick = () => {
       const r = personaData.goals[Math.floor(Math.random() * personaData.goals.length)];
@@ -531,14 +574,14 @@ function showAppearanceBuilder() {
   // Present dropdowns for each appearance field with options, plus a freeform description at end
   const opts = personaData.appearanceDetails;
   content.innerHTML = `
-    <label>Eye Color: <select id="eyeColor">${opts.eyeColors.map(c => `<option>${c}</option>`)}</select></label><br>
-    <label>Hair Color: <select id="hairColor">${opts.hairColors.map(c => `<option>${c}</option>`)}</select></label><br>
-    <label>Hair Style: <select id="hairStyle">${opts.hairStyles.map(c => `<option>${c}</option>`)}</select></label><br>
-    <label>Height: <select id="height">${opts.height.map(c => `<option>${c}</option>`)}</select></label><br>
-    <label>Build: <select id="build">${opts.build.map(c => `<option>${c}</option>`)}</select></label><br>
-    <label>Skin Tone: <select id="skinTone">${opts.skinTones.map(c => `<option>${c}</option>`)}</select></label><br>
-    <label>Features: <select multiple id="features">${opts.features.map(c => `<option>${c}</option>`)}</select></label><br>
-    <label>Voice: <select id="voice">${opts.voice.map(c => `<option>${c}</option>`)}</select></label><br>
+    <label>Eye Color: <select class="custom-select" id="eyeColor">${opts.eyeColors.map(c => `<option>${c}</option>`)}</select></label><br>
+    <label>Hair Color: <select class="custom-select" id="hairColor">${opts.hairColors.map(c => `<option>${c}</option>`)}</select></label><br>
+    <label>Hair Style: <select class="custom-select" id="hairStyle">${opts.hairStyles.map(c => `<option>${c}</option>`)}</select></label><br>
+    <label>Height: <select class="custom-select" id="height">${opts.height.map(c => `<option>${c}</option>`)}</select></label><br>
+    <label>Build: <select class="custom-select" id="build">${opts.build.map(c => `<option>${c}</option>`)}</select></label><br>
+    <label>Skin Tone: <select class="custom-select" id="skinTone">${opts.skinTones.map(c => `<option>${c}</option>`)}</select></label><br>
+    <label>Features: <select multiple class="custom-select" id="features">${opts.features.map(c => `<option>${c}</option>`)}</select></label><br>
+    <label>Voice: <select class="custom-select" id="voice">${opts.voice.map(c => `<option>${c}</option>`)}</select></label><br>
     <label>Description: <textarea id="desc" rows="2" placeholder="Your description"></textarea></label><br>
   `;
 }
@@ -558,16 +601,32 @@ function allPersonaFieldsFilled(obj) {
 }
 
 // --- Skill System Info ---
-window.displaySkillXPInfo = function(skills) {
-  content.innerHTML = `
-    <h2>Skill System</h2>
-    <p>Skills improve through use. Succeed at skill checks to gain experience and
-    unlock more abilities at higher levels.</p>
-    <ul>${skills.slice(0,5).map(s => `<li>${s.name}</li>`).join('')}</ul>
-  `;
-  // When viewing info, next/prev buttons simply move steps
+window.displaySkillSelection = function(skills) {
+  content.innerHTML = '';
+  const grid = document.createElement('div');
+  grid.className = 'skill-grid';
+  let chosen = null;
+  skills.forEach(skill => {
+    const card = document.createElement('div');
+    card.className = 'skill-card neon-frame';
+    card.setAttribute('role','button');
+    card.tabIndex = 0;
+    card.innerHTML = `<h3>${skill.name}</h3><p>${skill.description}</p>`;
+    card.onclick = () => {
+      if (chosen) chosen.classList.remove('selected');
+      card.classList.add('selected');
+      chosen = card;
+      setTimeout(() => { window.selectStartingSkill(skill.name); uiStep++; renderStep(); }, 200);
+    };
+    card.ondblclick = () => { window.selectStartingSkill(skill.name); uiStep++; renderStep(); };
+    card.onkeydown = (e) => { if(e.key==='Enter') card.click(); if(e.key==='Escape'){ prevStep(); uiStep--; renderStep(); } };
+    grid.appendChild(card);
+  });
+  content.appendChild(grid);
+  prevBtn.disabled = false;
+  nextBtn.disabled = true;
   prevBtn.onclick = () => { prevStep(); uiStep--; renderStep(); };
-  nextBtn.onclick = () => { nextStep(); uiStep++; renderStep(); };
+  nextBtn.onclick = () => {};
 };
 
 // --- Power Carousel ---
@@ -585,11 +644,19 @@ window.displayPowerCarousel = function (powers) {
     const tree = powers[powerIndex];
     const card = document.createElement('div');
     card.className = 'carousel-card neon-frame power-tree-card';
+    card.setAttribute('role','button');
+    card.tabIndex = 0;
     card.innerHTML = `
       <h2>${tree.name}</h2>
-      <p>${tree.description || ''}</p>
-      <button class="select-power-tree" data-idx="${powerIndex}">Select</button>
-    `;
+      <p>${tree.description || ''}</p>`;
+    card.onclick = () => {
+      selectedTree = tree;
+      const lvl0 = tree.levels.find(l => l.level === 0);
+      if (lvl0) chosenPowers.push(lvl0);
+      window.displayPowerCarousel(powers);
+    };
+    card.ondblclick = () => { selectedTree = tree; const lvl0 = tree.levels.find(l=>l.level===0); if(lvl0) chosenPowers.push(lvl0); window.displayPowerCarousel(powers); };
+    card.onkeydown = (e)=>{ if(e.key==='Enter') card.click(); if(e.key==='Escape'){ prevStep(); uiStep--; renderStep(); } };
     content.appendChild(card);
 
     prevBtn.disabled = powerIndex === 0;
@@ -597,13 +664,7 @@ window.displayPowerCarousel = function (powers) {
     prevBtn.onclick = () => { if (powerIndex > 0) { powerIndex--; window.displayPowerCarousel(powers); } };
     nextBtn.onclick = () => { if (powerIndex < powers.length - 1) { powerIndex++; window.displayPowerCarousel(powers); } };
 
-    card.querySelector('.select-power-tree').onclick = () => {
-      selectedTree = tree;
-      // auto-add level 0 power if present
-      const lvl0 = tree.levels.find(l => l.level === 0);
-      if (lvl0) chosenPowers.push(lvl0);
-      window.displayPowerCarousel(powers);
-    };
+    // navigation handled on card click
   } else {
     showPowerTree(selectedTree, powers);
   }
@@ -613,7 +674,8 @@ function showPowerTree(tree, powers) {
   content.innerHTML = '';
   const info = document.createElement('div');
   info.className = 'power-tree-info';
-  info.innerHTML = `<h2>${tree.name}</h2><p>${tree.description || ''}</p>`;
+  const spent = chosenPowers.reduce((a,p)=>a+p.level,0);
+  info.innerHTML = `<h2>${tree.name}</h2><p>${tree.description || ''}</p><p>Power Points: ${spent}/${powerPoints}</p>`;
   content.appendChild(info);
 
   let remaining = powerPoints - chosenPowers.reduce((a,p)=>a+p.level,0);
@@ -634,7 +696,9 @@ function showPowerTree(tree, powers) {
     grouped[lvl].forEach(p => {
       const card = document.createElement('div');
       const already = chosenPowers.find(cp => cp.power === p.power);
-      card.className = 'power-card';
+      card.className = 'power-card option-card';
+      card.setAttribute('role','button');
+      card.tabIndex = 0;
       card.innerHTML = `
         <h4>${p.power}</h4>
         <p><b>Activation:</b> ${p.activation_cost}</p>
@@ -642,14 +706,16 @@ function showPowerTree(tree, powers) {
         <p><b>Range:</b> ${p.range}</p>
         <p><b>Uses:</b> ${p.uses}</p>
         <p>${p.effect}</p>
-        <button class="choose-power" ${already || p.level > remaining ? 'disabled' : ''}>${already ? 'Selected' : 'Choose'}</button>
       `;
-      card.querySelector('.choose-power').onclick = () => {
+      if(already) card.classList.add('selected');
+      if(p.level>remaining && !already) card.style.opacity='0.5';
+      card.onclick = () => {
         if (p.level <= remaining && !already) {
           chosenPowers.push(p);
           showPowerTree(tree, powers);
         }
       };
+      card.onkeydown = (e)=>{ if(e.key==='Enter') card.click(); };
       grid.appendChild(card);
     });
     section.appendChild(grid);
@@ -671,6 +737,59 @@ function showPowerTree(tree, powers) {
   prevBtn.onclick = () => { selectedTree = null; chosenPowers = []; window.displayPowerCarousel(powers); };
   nextBtn.onclick = () => {};
 }
+
+// --- Era Selector ---
+window.displayEraSelector = function () {
+  content.innerHTML = '';
+
+  const eras = [
+    {
+      name: 'Medieval',
+      text: 'An age of knights, castles and ancient magic.'
+    },
+    {
+      name: 'Victorian',
+      text: 'Industry and intrigue within a steampunk world.'
+    },
+    {
+      name: 'Modern',
+      text: 'The familiar present day with a twist of adventure.'
+    },
+    {
+      name: 'Future',
+      text: 'Advanced technology and far‑flung frontiers.'
+    }
+  ];
+
+  eras.forEach(era => {
+    const card = document.createElement('div');
+    card.className = 'carousel-card neon-frame era-card';
+    card.tabIndex = 0;
+    card.innerHTML = `<h3>${era.name}</h3><p>${era.text}</p>`;
+    if (character.era === era.name) card.classList.add('selected');
+    card.onclick = () => {
+      Array.from(document.getElementsByClassName('era-card')).forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      setTimeout(() => {
+        window.selectEra(era.name);
+        uiStep++;
+        renderStep();
+      }, 200);
+    };
+    card.ondblclick = () => {
+      window.selectEra(era.name);
+      uiStep++;
+      renderStep();
+    };
+    card.onkeydown = (e) => { if (e.key === 'Enter') card.click(); };
+    content.appendChild(card);
+  });
+
+  prevBtn.disabled = false;
+  nextBtn.disabled = true;
+  prevBtn.onclick = () => { prevStep(); uiStep--; renderStep(); };
+  nextBtn.onclick = () => {};
+};
 window.displayPersonaBuilder = window.displayPersonaStep; // <-- this covers the "preset or build" screen
 
 

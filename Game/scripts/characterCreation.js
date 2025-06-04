@@ -198,9 +198,9 @@ export function setPersonaOnCharacter(skillToBump = null) {
 // --- STEP 5: Skills (just info step, handled by UI) ---
 export function displaySkillSystemStep() {
   showPrompt(
-    `Step 5: Skills & Leveling. Skills have 5 levels. To level up, succeed at skill checks. Each level unlocks new features.`
+    `Step 5: Select a starting skill.`
   );
-  window.displaySkillXPInfo(gameData.skills);
+  window.displaySkillSelection(gameData.skills);
 }
 
 // --- STEP 6: Superpowers ---
@@ -253,6 +253,10 @@ function addOrLevelSkill(skillName, level) {
   else character.skillChoices.push({ name: skillName, level });
 }
 
+export function selectStartingSkill(skillName) {
+  addOrLevelSkill(skillName, 1);
+}
+
 function saveCharacter(charObj) {
   localStorage.setItem('currentCharacter', JSON.stringify(charObj));
 }
@@ -265,3 +269,4 @@ window.selectRace = selectRace;
 window.selectProfession = selectProfession;
 window.selectSuperpower = selectSuperpower;
 window.selectEra = selectEra;
+window.selectStartingSkill = selectStartingSkill;
