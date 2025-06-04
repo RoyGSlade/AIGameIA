@@ -4,6 +4,10 @@
 **Maintainer:** Donaven  
 **Last Updated:** [Fill in date]
 
+
+---
+NOTE: Before starting any task, all agents (including Codex) must check `codexlog.md` for previous work on the problem. 
+After completing any task, summarize the actions and changes taken as a numbered entry in `codexlog.md`.
 ---
 
 ## 1. CORE PRINCIPLES
