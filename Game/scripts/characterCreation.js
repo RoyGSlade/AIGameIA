@@ -261,6 +261,10 @@ function saveCharacter(charObj) {
   localStorage.setItem('currentCharacter', JSON.stringify(charObj));
 }
 
+export function resetSavedCharacter() {
+  localStorage.removeItem('currentCharacter');
+}
+
 // UI helper stubs (will be overwritten by UI file)
 function showPrompt(txt) { }
 
@@ -270,3 +274,4 @@ window.selectProfession = selectProfession;
 window.selectSuperpower = selectSuperpower;
 window.selectEra = selectEra;
 window.selectStartingSkill = selectStartingSkill;
+window.resetSavedCharacter = resetSavedCharacter;

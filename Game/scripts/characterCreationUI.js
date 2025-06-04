@@ -431,18 +431,18 @@ function showPersonaBuilder() {
 
   if (field.key === 'appearance') {
     showAppearanceBuilder();
-    validator = (checkOnly=false) => {
-      const data = {
-        eyeColor: document.getElementById('eyeColor').value,
-        hairColor: document.getElementById('hairColor').value,
-        hairStyle: document.getElementById('hairStyle').value,
-        height: document.getElementById('height').value,
-        build: document.getElementById('build').value,
-        skinTone: document.getElementById('skinTone').value,
-        features: content.getSelectedFeatures(),
-        voice: document.getElementById('voice').value,
-        description: document.getElementById('desc').value
-      };
+      validator = (checkOnly=false) => {
+        const data = {
+          eyeColor: document.getElementById('eyeColor')?.value || '',
+          hairColor: document.getElementById('hairColor')?.value || '',
+          hairStyle: document.getElementById('hairStyle')?.value || '',
+          height: document.getElementById('height')?.value || '',
+          build: document.getElementById('build')?.value || '',
+          skinTone: document.getElementById('skinTone')?.value || '',
+          features: content.getSelectedFeatures(),
+          voice: document.getElementById('voice')?.value || '',
+          description: document.getElementById('desc')?.value || ''
+        };
       if (!checkOnly) buildPersona.appearance = data;
       return data.eyeColor && data.hairColor && data.hairStyle;
     };
@@ -928,8 +928,7 @@ window.displayCharacterSheet = function (charData) {
     <p><b>Plan:</b> ${persona.plan || ''}</p>
     <p><b>Hardship:</b> ${persona.hardship || ''}</p>
     <p><b>Goals:</b> ${(persona.goals?.short)||''} / ${(persona.goals?.long)||''}</p>
-    <p><b>Empathy:</b> ${persona.empathy || ''}</p>
-    <p><b>Appearance:</b> ${(persona.appearance?.description)||''}</p>`;
+    <p><b>Empathy:</b> ${persona.empathy || ''}</p>`;
   container.appendChild(makeSection('Persona', personaHtml));
 
   if (Array.isArray(persona.traits)) {
@@ -940,8 +939,20 @@ window.displayCharacterSheet = function (charData) {
     container.appendChild(makeSection('Contacts', `<p>${contactText}</p>`));
   }
 
-  if (Array.isArray(persona.appearance?.features)) {
-    container.appendChild(makeSection('Features', `<p>${persona.appearance.features.join(', ')}</p>`));
+  if (persona.appearance) {
+    const ap = persona.appearance;
+    const lines = [];
+    if (ap.eyeColor) lines.push(`Eye Color: ${ap.eyeColor}`);
+    if (ap.hairColor || ap.hairStyle) lines.push(`Hair: ${ap.hairColor || ''} ${ap.hairStyle || ''}`.trim());
+    if (ap.height) lines.push(`Height: ${ap.height}`);
+    if (ap.build) lines.push(`Build: ${ap.build}`);
+    if (ap.skinTone) lines.push(`Skin Tone: ${ap.skinTone}`);
+    if (ap.voice) lines.push(`Voice: ${ap.voice}`);
+    if (ap.description) lines.push(`Description: ${ap.description}`);
+    container.appendChild(makeSection('Appearance', `<p>${lines.join('</p><p>')}</p>`));
+    if (Array.isArray(ap.features)) {
+      container.appendChild(makeSection('Features', `<p>${ap.features.join(', ')}</p>`));
+    }
   }
 
   if (Array.isArray(charData.skillChoices)) {
@@ -959,6 +970,16 @@ window.displayCharacterSheet = function (charData) {
   }
 
   content.appendChild(container);
+
+  const resetBtn = document.createElement('button');
+  resetBtn.id = 'reset-save-btn-summary';
+  resetBtn.className = 'select-btn';
+  resetBtn.textContent = 'Reset Saved Character';
+  resetBtn.onclick = () => {
+    if (window.resetSavedCharacter) window.resetSavedCharacter();
+    if (typeof localStorage !== 'undefined') localStorage.removeItem('currentCharacter');
+  };
+  content.appendChild(resetBtn);
 
   nextBtn.textContent = 'Confirm';
   prevBtn.disabled = false;
