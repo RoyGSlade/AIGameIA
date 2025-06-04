@@ -356,3 +356,69 @@ button:focus { outline: 2px solid #14f1e1; }
   max-height: 50vh;
   gap: 0.8rem;
 }
+/* Summary screen layout */
+.summary-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 1rem;
+}
+.summary-section {
+  width: 90%;
+  max-width: 700px;
+  background: rgba(20,30,40,0.85);
+  border: 1px solid #c0c0c0;
+  padding: 1rem;
+  border-radius: 12px;
+}
+.summary-section h3 { margin-top: 0; }
+
+/* Fixed navigation and controls */
+#progress-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(14,24,44,0.96);
+  padding: 0.5rem 0;
+}
+#creation-main { padding-top: 60px; }
+#carousel-controls {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+}
+#carousel { padding-bottom: 80px; }
+
+/* Custom Scrollbars */
+.scroll-column,
+.scroll-row,
+.training-majors,
+#training-panel {
+  scrollbar-width: thin;
+  scrollbar-color: #3e54fd transparent;
+}
+.scroll-column::-webkit-scrollbar,
+.scroll-row::-webkit-scrollbar,
+.training-majors::-webkit-scrollbar,
+#training-panel::-webkit-scrollbar {
+  width: 4px;
+}
+.scroll-column::-webkit-scrollbar-thumb,
+.scroll-row::-webkit-scrollbar-thumb,
+.training-majors::-webkit-scrollbar-thumb,
+#training-panel::-webkit-scrollbar-thumb {
+  background: #3e54fd;
+  box-shadow: 0 0 6px #14f1e1;
+  border-radius: 4px;
+}
+.scroll-column::-webkit-scrollbar-track,
+.scroll-row::-webkit-scrollbar-track,
+.training-majors::-webkit-scrollbar-track,
+#training-panel::-webkit-scrollbar-track {
+  background: transparent;
+}

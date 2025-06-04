@@ -131,6 +131,15 @@ README.md
 
 ---
 
-*This document is both the spec and style guide for all contributors, human or AI.  
+*This document is both the spec and style guide for all contributors, human or AI.
 Update it alongside any major system change.*
+
+## 10. Recent Updates
+
+- Added a Summary step at the end of character creation. `displayCharacterSheet()`
+  renders the player's full selections in boxed sections and is triggered after
+  choosing an Era.
+- Introduced custom neon scrollbars and fixed positioning for navigation headers
+  and action buttons. Containers use `.summary-container` and `.summary-section`
+  styles for the summary screen.
 
