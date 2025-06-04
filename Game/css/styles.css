@@ -1,0 +1,139 @@
+/* Infinite Ages - styles.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
+body {
+  background: #0e0e0e;
+  color: #c2f0ff;
+  font-family: 'Orbitron', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+main#game-container {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  width: 100vw;
+  max-width: none;      /* Remove this */
+  margin: 2rem auto;    /* Still keeps it centered vertically */
+  gap: 2rem;
+}
+
+h2 {
+  color: #63e0ff;
+  border-bottom: 2px solid #63e0ff;
+  padding-bottom: 4px;
+  margin-top: 2rem;
+  text-transform: uppercase;
+  font-size: 1.2rem;
+}
+
+p, label, li {
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: #c2f0ff;
+}
+
+.attribute-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 10px;
+}
+
+#character-creation {
+  background: #1a1a1a;
+  border: 1px solid #63e0ff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 0 20px #1a92b9aa;
+}
+
+#text-output {
+  background: #000000;
+  border: 2px inset #222;
+  border-radius: 6px;
+  padding: 15px;
+  box-shadow: inset 0 0 10px #00d8ff55;
+  font-family: monospace;
+}
+
+#narration-box {
+  min-height: 100px;
+  white-space: pre-wrap;
+}
+
+#player-input {
+  margin-top: 10px;
+  padding: 10px;
+  font-size: 1rem;
+  font-family: monospace;
+  width: 100%;
+  background: #1c1c1c;
+  color: #63e0ff;
+  border: 1px solid #63e0ff;
+  border-radius: 4px;
+  box-shadow: 0 0 8px #00ffff33;
+}
+
+ul#skills-list {
+  list-style: none;
+  padding: 0;
+  columns: 2;
+  column-gap: 40px;
+}
+
+ul#skills-list li::before {
+  content: '▸';
+  color: #63e0ff;
+  margin-right: 6px;
+}
+
+#weapons-section, #armor-section, #power-tree-section {
+  background: #121212;
+  border: 1px dashed #00bfff;
+  padding: 10px;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+  min-height: 50px;
+}
+
+span {
+  font-weight: bold;
+  color: #ffffff;
+}
+.training-flex {
+  display: flex;
+  gap: 2rem;
+  width: 100%;
+}
+
+.training-school {
+  flex: 1 1 30%;
+  background: #17243c;
+  padding: 2rem 1rem;
+  border-radius: 14px;
+  min-width: 250px;
+  margin-bottom: 1rem;
+  box-shadow: 0 0 18px #00e1ff33;
+}
+
+.training-majors {
+  flex: 3 1 65%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  overflow-y: auto;
+  max-height: 60vh;
+  background: transparent;
+  min-width: 320px;
+}
+
+.major-card {
+  background: #1d2233;
+  border: 1.5px solid #35f1f9;
+  border-radius: 10px;
+  padding: 1rem 1.3rem;
+  box-shadow: 0 0 8px #63e0ff55;
+  margin-bottom: 0.5rem;
+}
