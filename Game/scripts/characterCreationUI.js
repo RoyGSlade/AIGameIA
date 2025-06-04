@@ -195,9 +195,17 @@ window.displayProfessionCarousel = function (professions) {
 };
 
 // --- Training Carousel ---
-window.displayTrainingCarousel = function(trainings, selectedIdx = 0) {
-  // You may allow carousel to scroll trainings, but just show one at a time:
-  const t = trainings[selectedIdx];
+window.displayTrainingCarousel = function (trainings) {
+  if (!trainings || trainings.length === 0) {
+    content.innerHTML = '<p>No trainings loaded!</p>';
+    return;
+  }
+
+  // Clamp index and select the current training to display
+  if (trainingIndex < 0) trainingIndex = 0;
+  if (trainingIndex > trainings.length - 1) trainingIndex = trainings.length - 1;
+
+  const t = trainings[trainingIndex];
 
   const left = `
     <div class="training-school neon-frame">
@@ -240,6 +248,22 @@ window.displayTrainingCarousel = function(trainings, selectedIdx = 0) {
       renderStep();
     };
   });
+
+  // Configure carousel navigation using the global prev/next buttons
+  prevBtn.disabled = trainingIndex === 0;
+  nextBtn.disabled = trainingIndex === trainings.length - 1;
+  prevBtn.onclick = () => {
+    if (trainingIndex > 0) {
+      trainingIndex--;
+      window.displayTrainingCarousel(trainings);
+    }
+  };
+  nextBtn.onclick = () => {
+    if (trainingIndex < trainings.length - 1) {
+      trainingIndex++;
+      window.displayTrainingCarousel(trainings);
+    }
+  };
 };
 
 
