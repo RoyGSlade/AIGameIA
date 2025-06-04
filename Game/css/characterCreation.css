@@ -196,3 +196,22 @@ button:focus { outline: 2px solid #14f1e1; }
   #carousel, #prompt-bar { width: 99vw; max-width: 99vw; }
   .carousel-card { min-width: 85vw; max-width: 95vw; }
 }
+
+/* Progress navigation */
+#progress-nav {
+  display: flex;
+  justify-content: space-between;
+  width: 90vw;
+  max-width: 720px;
+  margin: 0 auto 1rem auto;
+  font-size: 0.9rem;
+}
+#progress-nav .step {
+  flex: 1;
+  text-align: center;
+  opacity: 0.5;
+}
+#progress-nav .active {
+  opacity: 1;
+  color: #fff;
+}
