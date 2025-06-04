@@ -143,64 +143,32 @@
     "Completely callous"
   ],
   "traits": [
-    "Stealthy",
-    "Charismatic",
-    "Tactical thinker",
-    "Loyal",
-    "Paranoid",
-    "Ruthless",
-    "Honest",
-    "Quick-tempered",
-    "Wise",
-    "Observant",
-    "Resilient",
-    "Soft-spoken",
-    "Bold",
-    "Manipulative",
-    "Compassionate",
-    "Calculating"
+    { "name": "Stealthy", "category": "Combat" },
+    { "name": "Charismatic", "category": "Social" },
+    { "name": "Tactical thinker", "category": "Combat" },
+    { "name": "Loyal", "category": "Personality" },
+    { "name": "Paranoid", "category": "Personality" },
+    { "name": "Ruthless", "category": "Personality" },
+    { "name": "Honest", "category": "Personality" },
+    { "name": "Quick-tempered", "category": "Personality" },
+    { "name": "Wise", "category": "Personality" },
+    { "name": "Observant", "category": "Personality" },
+    { "name": "Resilient", "category": "Personality" },
+    { "name": "Soft-spoken", "category": "Social" },
+    { "name": "Bold", "category": "Personality" },
+    { "name": "Manipulative", "category": "Social" },
+    { "name": "Compassionate", "category": "Personality" },
+    { "name": "Calculating", "category": "Personality" }
   ],
   "contacts": [
-    {
-      "name": "Jax",
-      "relationship": "Ex-handler",
-      "note": "Knows too much"
-    },
-    {
-      "name": "Mira",
-      "relationship": "Black market medic",
-      "note": "Still owes you a favor"
-    },
-    {
-      "name": "Voss",
-      "relationship": "Smuggler",
-      "note": "Reliable when paid"
-    },
-    {
-      "name": "Reyna",
-      "relationship": "Detective",
-      "note": "Wants you to turn over a new leaf"
-    },
-    {
-      "name": "Thalor",
-      "relationship": "Mentor",
-      "note": "Believes in your potential"
-    },
-    {
-      "name": "Sylvia",
-      "relationship": "Archivist",
-      "note": "Access to ancient knowledge"
-    },
-    {
-      "name": "Corvin",
-      "relationship": "Rival",
-      "note": "Always one step ahead"
-    },
-    {
-      "name": "Elira",
-      "relationship": "Sibling",
-      "note": "Keeps your family secrets"
-    }
+    { "name": "Jax", "relationship": "Ex-handler", "note": "Knows too much", "category": "Negative" },
+    { "name": "Mira", "relationship": "Black market medic", "note": "Still owes you a favor", "category": "Neutral" },
+    { "name": "Voss", "relationship": "Smuggler", "note": "Reliable when paid", "category": "Neutral" },
+    { "name": "Reyna", "relationship": "Detective", "note": "Wants you to turn over a new leaf", "category": "Positive" },
+    { "name": "Thalor", "relationship": "Mentor", "note": "Believes in your potential", "category": "Positive" },
+    { "name": "Sylvia", "relationship": "Archivist", "note": "Access to ancient knowledge", "category": "Positive" },
+    { "name": "Corvin", "relationship": "Rival", "note": "Always one step ahead", "category": "Negative" },
+    { "name": "Elira", "relationship": "Sibling", "note": "Keeps your family secrets", "category": "Positive" }
   ],
   "appearanceDetails": {
     "eyeColors": [

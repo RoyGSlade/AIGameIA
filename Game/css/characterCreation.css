@@ -64,9 +64,21 @@ body {
   cursor: pointer;
 }
 
-.carousel-card:hover {
+.carousel-card:hover,
+.major-card:hover,
+.option-card:hover,
+.skill-card:hover {
   box-shadow: 0 0 0 4px #00ffe1cc, 0 0 32px #3e54fd99;
   transform: scale(1.03);
+}
+
+.carousel-card.selected,
+.major-card.selected,
+.option-card.selected,
+.skill-card.selected,
+.era-card.selected {
+  box-shadow: 0 0 0 4px #00ffe1cc, 0 0 36px #3e54fdff;
+  transform: scale(1.05);
 }
 
 .neon-frame {
@@ -166,6 +178,8 @@ button:focus { outline: 2px solid #14f1e1; }
   padding: 1rem 1.3rem;
   box-shadow: 0 0 8px #63e0ff55;
   margin-bottom: 0.5rem;
+  cursor: pointer;
+  transition: box-shadow 0.3s, transform 0.3s;
 }
 
 /* Training panel shown beside carousel during training step */
@@ -244,4 +258,54 @@ button:focus { outline: 2px solid #14f1e1; }
   padding: 1rem;
   flex: 1 1 260px;
   max-width: 300px;
+}
+
+/* Skill selection */
+.skill-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.skill-card {
+  background: #1d2233;
+  border: 1.5px solid #35f1f9;
+  border-radius: 10px;
+  padding: 1rem;
+  flex: 1 1 220px;
+  max-width: 260px;
+  cursor: pointer;
+  transition: box-shadow 0.3s, transform 0.3s;
+}
+
+/* Persona trait/contact cards */
+.option-card {
+  background: #1d2233;
+  border: 1px solid #35f1f9;
+  border-radius: 8px;
+  padding: 0.6rem 0.8rem;
+  min-width: 150px;
+  text-align: center;
+  cursor: pointer;
+  transition: box-shadow 0.3s, transform 0.3s;
+}
+
+.scroll-row {
+  display: flex;
+  overflow-x: auto;
+  gap: 0.8rem;
+  padding-bottom: 0.5rem;
+}
+
+.custom-select {
+  padding: 0.4rem 0.6rem;
+  border-radius: 8px;
+  background: #1d2233;
+  color: #e0e5ff;
+  border: 1px solid #35f1f9;
+}
+
+#trait-count, #contact-count {
+  margin-bottom: 0.5rem;
 }
