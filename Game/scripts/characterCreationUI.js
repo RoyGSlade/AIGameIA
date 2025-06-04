@@ -861,6 +861,81 @@ window.displayEraSelector = function () {
   prevBtn.onclick = () => { prevStep(); uiStep--; renderStep(); };
   nextBtn.onclick = () => {};
 };
+
+// --- Summary Character Sheet ---
+window.displayCharacterSheet = function (charData) {
+  content.innerHTML = '';
+
+  const container = document.createElement('div');
+  container.className = 'summary-container';
+
+  const makeSection = (title, html) => {
+    const sec = document.createElement('div');
+    sec.className = 'summary-section neon-frame';
+    sec.innerHTML = `<h3>${title}</h3>${html}`;
+    return sec;
+  };
+
+  if (charData.race) {
+    container.appendChild(makeSection('Race', `<p>${charData.race.name}</p><p>Age: ${charData.age || ''}</p>`));
+  }
+  if (charData.profession) {
+    container.appendChild(makeSection('Profession', `<p>${charData.profession.name}</p>`));
+  }
+  if (charData.training) {
+    container.appendChild(makeSection('Training', `<p>${charData.training.name}</p><p>Major: ${charData.major || ''}</p>`));
+  }
+
+  const attrs = Object.entries(charData.attributes || {})
+    .map(([k,v]) => `${k}: ${v}`)
+    .join(', ');
+  if (attrs) container.appendChild(makeSection('Attributes', `<p>${attrs}</p>`));
+
+  const persona = charData.persona || {};
+  const personaHtml = `
+    <p><b>Personality:</b> ${persona.personality || ''}</p>
+    <p><b>Motivation:</b> ${persona.motivation || ''}</p>
+    <p><b>Plan:</b> ${persona.plan || ''}</p>
+    <p><b>Hardship:</b> ${persona.hardship || ''}</p>
+    <p><b>Goals:</b> ${(persona.goals?.short)||''} / ${(persona.goals?.long)||''}</p>
+    <p><b>Empathy:</b> ${persona.empathy || ''}</p>
+    <p><b>Appearance:</b> ${(persona.appearance?.description)||''}</p>`;
+  container.appendChild(makeSection('Persona', personaHtml));
+
+  if (Array.isArray(persona.traits)) {
+    container.appendChild(makeSection('Traits', `<p>${persona.traits.join(', ')}</p>`));
+  }
+  if (Array.isArray(persona.contacts)) {
+    const contactText = persona.contacts.map(c=>`${c.name} (${c.relationship})`).join(', ');
+    container.appendChild(makeSection('Contacts', `<p>${contactText}</p>`));
+  }
+
+  if (Array.isArray(persona.appearance?.features)) {
+    container.appendChild(makeSection('Features', `<p>${persona.appearance.features.join(', ')}</p>`));
+  }
+
+  if (Array.isArray(charData.skillChoices)) {
+    const skillText = charData.skillChoices.map(s=>`${s.name} (Lv${s.level})`).join(', ');
+    container.appendChild(makeSection('Skills', `<p>${skillText}</p>`));
+  }
+
+  if (Array.isArray(charData.superpowers)) {
+    const powerText = charData.superpowers.map(p=>`${p.power} (Lv${p.level})`).join(', ');
+    container.appendChild(makeSection('Superpowers', `<p>${powerText}</p>`));
+  }
+
+  if (charData.era) {
+    container.appendChild(makeSection('Era', `<p>${charData.era}</p>`));
+  }
+
+  content.appendChild(container);
+
+  nextBtn.textContent = 'Confirm';
+  prevBtn.disabled = false;
+  nextBtn.disabled = false;
+  prevBtn.onclick = () => { prevStep(); uiStep--; renderStep(); };
+  nextBtn.onclick = () => { nextStep(); uiStep++; renderStep(); };
+};
 window.displayPersonaBuilder = window.displayPersonaStep; // <-- this covers the "preset or build" screen
 
 
