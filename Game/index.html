@@ -11,6 +11,17 @@
       <!-- The main UI will render here -->
     </div>
   </main>
+  <button id="reset-save-btn" style="display:none;">Reset Saved Character</button>
   <script type="module" src="scripts/gamestate.js"></script>
+  <script type="module">
+    const resetBtn = document.getElementById('reset-save-btn');
+    if (localStorage.getItem('currentCharacter')) {
+      resetBtn.style.display = 'block';
+    }
+    resetBtn.addEventListener('click', () => {
+      localStorage.removeItem('currentCharacter');
+      resetBtn.style.display = 'none';
+    });
+  </script>
 </body>
 </html>
