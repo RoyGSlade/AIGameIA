@@ -1,0 +1,151 @@
+{
+  "roles": [
+    {
+      "tag": "merchant",
+      "subtypes": [
+        {
+          "name": "general_goods_basic",
+          "tier": 1,
+          "description": "A local peddler of essential household and utility goods.",
+          "effects": {
+            "sale_price_mod": 0.95,
+            "buy_price_mod": 1.05,
+            "can_trade": true,
+            "speech_defense_dc": 12,
+            "speech_defense_mod": 0,
+            "rarity_roll_dc": 16,
+            "merchanting_mod": 1,
+            "inventory_size": 10,
+            "inventory_quality": 1,
+            "store_profile": "general_goods_basic"
+          }
+        },
+        {
+          "name": "general_goods_established",
+          "tier": 2,
+          "description": "Runs a moderately successful shop with expanded inventory.",
+          "effects": {
+            "sale_price_mod": 0.9,
+            "buy_price_mod": 1.1,
+            "can_trade": true,
+            "speech_defense_dc": 14,
+            "speech_defense_mod": 1,
+            "rarity_roll_dc": 15,
+            "merchanting_mod": 2,
+            "inventory_size": 15,
+            "inventory_quality": 2,
+            "store_profile": "general_goods_mid"
+          }
+        },
+        {
+          "name": "general_goods_master",
+          "tier": 3,
+          "description": "Well-connected merchant with access to regional trade networks.",
+          "effects": {
+            "sale_price_mod": 0.85,
+            "buy_price_mod": 1.15,
+            "can_trade": true,
+            "speech_defense_dc": 16,
+            "speech_defense_mod": 2,
+            "rarity_roll_dc": 14,
+            "merchanting_mod": 3,
+            "inventory_size": 20,
+            "inventory_quality": 3,
+            "store_profile": "general_goods_high"
+          }
+        },
+        {
+          "name": "weapons_dealer_licensed",
+          "tier": 2,
+          "description": "Sells government-approved combat gear with proper licensing.",
+          "effects": {
+            "sale_price_mod": 0.9,
+            "buy_price_mod": 1.1,
+            "can_trade": true,
+            "restricted_items": false,
+            "requires_license": true,
+            "speech_defense_dc": 14,
+            "speech_defense_mod": 1,
+            "rarity_roll_dc": 17,
+            "merchanting_mod": 2,
+            "inventory_size": 12,
+            "inventory_quality": 2,
+            "store_profile": "weapons_standard"
+          }
+        },
+        {
+          "name": "weapons_dealer_illegal",
+          "tier": 4,
+          "description": "Black market arms trader dealing in restricted or stolen weaponry.",
+          "effects": {
+            "sale_price_mod": 1.2,
+            "buy_price_mod": 0.8,
+            "can_trade": true,
+            "restricted_items": true,
+            "requires_faction_clearance": true,
+            "is_illegal": true,
+            "speech_defense_dc": 18,
+            "speech_defense_mod": 3,
+            "rarity_roll_dc": 12,
+            "merchanting_mod": 4,
+            "inventory_size": 20,
+            "inventory_quality": 4,
+            "store_profile": "weapons_black_market"
+          }
+        },
+        {
+          "name": "black_market_vendor_elite",
+          "tier": 5,
+          "description": "One of the few elite suppliers of legendary or forbidden items.",
+          "effects": {
+            "sale_price_mod": 1.5,
+            "buy_price_mod": 0.75,
+            "can_trade": true,
+            "restricted_items": true,
+            "requires_faction_clearance": true,
+            "is_illegal": true,
+            "speech_defense_dc": 20,
+            "speech_defense_mod": 4,
+            "rarity_roll_dc": 10,
+            "merchanting_mod": 5,
+            "inventory_size": 30,
+            "inventory_quality": 5,
+            "store_profile": "elite_illegal_goods"
+          }
+        }
+      ]
+    },
+    {
+      "tag": "guard",
+      "subtypes": [
+        {
+          "name": "city_guard",
+          "tier": 2,
+          "description": "Maintains order within urban limits, answers to city authorities.",
+          "effects": {
+            "combat_level": 3,
+            "alert_level": 2,
+            "will_arrest": true,
+            "speech_defense_dc": 15,
+            "bribe_dc": 16,
+            "loyalty_to_faction": 3
+          }
+        },
+        {
+          "name": "royal_guard",
+          "tier": 5,
+          "description": "Elite protectors of nobility or royalty.",
+          "effects": {
+            "combat_level": 5,
+            "alert_level": 5,
+            "will_arrest": true,
+            "speech_defense_dc": 20,
+            "bribe_dc": 25,
+            "immune_to_bribes": true,
+            "loyalty_to_faction": 5
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,265 @@
+{
+  "archetypes": [
+    {
+      "tag": "charming",
+      "description": "Warm, disarming, and naturally persuasive. People tend to trust them \u2014 sometimes against their better judgment.",
+      "behavior_modifiers": {
+        "persuasion_mod": 3,
+        "intimidation_mod": -1,
+        "lying_mod": 2,
+        "composure_mod": 1
+      },
+      "reaction_bias": {
+        "prefers": [
+          "friendly",
+          "wealthy"
+        ],
+        "dislikes": [
+          "hostile",
+          "pushy"
+        ]
+      },
+      "dialogue_style": [
+        "flirty",
+        "clever",
+        "confident"
+      ],
+      "effects": {
+        "speech_dc_mod": -2,
+        "bribe_dc_mod": -1
+      }
+    },
+    {
+      "tag": "ruthless",
+      "description": "Will do anything to win. Pragmatic, cold, and efficient \u2014 shows little empathy or hesitation.",
+      "behavior_modifiers": {
+        "persuasion_mod": -1,
+        "intimidation_mod": 3,
+        "lying_mod": 1,
+        "composure_mod": 2
+      },
+      "reaction_bias": {
+        "prefers": [
+          "strong",
+          "obedient"
+        ],
+        "dislikes": [
+          "weak",
+          "emotional"
+        ]
+      },
+      "dialogue_style": [
+        "cold",
+        "direct",
+        "minimal"
+      ],
+      "effects": {
+        "speech_dc_mod": 1,
+        "bribe_dc_mod": 3
+      }
+    },
+    {
+      "tag": "cheerful",
+      "description": "Always seems to find the bright side. Optimistic and open-hearted.",
+      "behavior_modifiers": {
+        "persuasion_mod": 1,
+        "intimidation_mod": -2,
+        "lying_mod": 0,
+        "composure_mod": 1
+      },
+      "reaction_bias": {
+        "prefers": [
+          "funny",
+          "kind"
+        ],
+        "dislikes": [
+          "aggressive",
+          "serious"
+        ]
+      },
+      "dialogue_style": [
+        "upbeat",
+        "chatty",
+        "positive"
+      ],
+      "effects": {
+        "speech_dc_mod": -1,
+        "bribe_dc_mod": 0
+      }
+    },
+    {
+      "tag": "paranoid",
+      "description": "Always watching. Assumes the worst and trusts no one without proof.",
+      "behavior_modifiers": {
+        "persuasion_mod": -2,
+        "intimidation_mod": 1,
+        "lying_mod": 2,
+        "composure_mod": -1
+      },
+      "reaction_bias": {
+        "prefers": [
+          "careful",
+          "honest"
+        ],
+        "dislikes": [
+          "pushy",
+          "secretive"
+        ]
+      },
+      "dialogue_style": [
+        "accusatory",
+        "suspicious",
+        "guarded"
+      ],
+      "effects": {
+        "speech_dc_mod": 3,
+        "bribe_dc_mod": 2
+      }
+    },
+    {
+      "tag": "fanatical",
+      "description": "Utterly devoted to a belief, cause, or figure. Obsessive and uncompromising.",
+      "behavior_modifiers": {
+        "persuasion_mod": -1,
+        "intimidation_mod": 2,
+        "lying_mod": -2,
+        "composure_mod": 2
+      },
+      "reaction_bias": {
+        "prefers": [
+          "believers",
+          "authority"
+        ],
+        "dislikes": [
+          "doubters",
+          "heretics"
+        ]
+      },
+      "dialogue_style": [
+        "sermon-like",
+        "intense",
+        "absolute"
+      ],
+      "effects": {
+        "speech_dc_mod": 4,
+        "bribe_dc_mod": 4
+      }
+    },
+    {
+      "tag": "motherly",
+      "description": "Protective and nurturing. Offers warmth, but hides ferocity underneath.",
+      "behavior_modifiers": {
+        "persuasion_mod": 2,
+        "intimidation_mod": 0,
+        "lying_mod": 1,
+        "composure_mod": 2
+      },
+      "reaction_bias": {
+        "prefers": [
+          "children",
+          "gentle"
+        ],
+        "dislikes": [
+          "cruelty",
+          "abuse"
+        ]
+      },
+      "dialogue_style": [
+        "soft",
+        "concerned",
+        "soothing"
+      ],
+      "effects": {
+        "speech_dc_mod": -1,
+        "bribe_dc_mod": 1
+      }
+    },
+    {
+      "tag": "cowardly",
+      "description": "Driven by fear. Avoids risk and confrontation at all costs.",
+      "behavior_modifiers": {
+        "persuasion_mod": -2,
+        "intimidation_mod": -1,
+        "lying_mod": 2,
+        "composure_mod": -3
+      },
+      "reaction_bias": {
+        "prefers": [
+          "protectors",
+          "safe situations"
+        ],
+        "dislikes": [
+          "violence",
+          "pressure"
+        ]
+      },
+      "dialogue_style": [
+        "nervous",
+        "hesitant",
+        "deflective"
+      ],
+      "effects": {
+        "speech_dc_mod": 2,
+        "bribe_dc_mod": -2
+      }
+    },
+    {
+      "tag": "absent_minded",
+      "description": "Scattered and easily distracted. Often forgets what they\u2019re saying mid-sentence.",
+      "behavior_modifiers": {
+        "persuasion_mod": 0,
+        "intimidation_mod": -2,
+        "lying_mod": 1,
+        "composure_mod": -2
+      },
+      "reaction_bias": {
+        "prefers": [
+          "patient",
+          "simple"
+        ],
+        "dislikes": [
+          "rushed",
+          "complicated"
+        ]
+      },
+      "dialogue_style": [
+        "rambling",
+        "distracted",
+        "vague"
+      ],
+      "effects": {
+        "speech_dc_mod": 1,
+        "bribe_dc_mod": -1
+      }
+    },
+    {
+      "tag": "stoic",
+      "description": "Unshakable. Rarely shows emotion and almost never loses control.",
+      "behavior_modifiers": {
+        "persuasion_mod": 1,
+        "intimidation_mod": 1,
+        "lying_mod": 0,
+        "composure_mod": 4
+      },
+      "reaction_bias": {
+        "prefers": [
+          "calm",
+          "disciplined"
+        ],
+        "dislikes": [
+          "dramatic",
+          "impulsive"
+        ]
+      },
+      "dialogue_style": [
+        "minimal",
+        "measured",
+        "serious"
+      ],
+      "effects": {
+        "speech_dc_mod": 2,
+        "bribe_dc_mod": 2
+      }
+    }
+  ]
+}
