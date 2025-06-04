@@ -3,7 +3,7 @@ AGENT HANDOFF PROTOCOL – Infinite Ages
 version: 1.0
 see: SYSTEM_SPEC.md for gameplay/data/UI rules
 ---
-
+if you are codex check the SYSTEM_SPEC.md file to verify you are following code philosophy 
 ## AGENTS
 - **Brain (GPT-4.1):** Logic, rules, state, context, calls all shots.
 - **Mouth (GPT-4.1 mini):** Pure narrative output; never alters state.
