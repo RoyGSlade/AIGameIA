@@ -155,6 +155,9 @@ window.displayRaceCarousel = function (races) {
 let professionIndex = 0;
 let trainingIndex = 0;
 let powerIndex = 0;
+let powerPoints = 2; // Starting PowerPoints (could be dynamic)
+let selectedPower = null;
+let selectedLevels = {}; // Track points spent per power
 
 // --- Professions Carousel ---
 window.displayProfessionCarousel = function (professions) {
@@ -565,6 +568,109 @@ window.displaySkillXPInfo = function(skills) {
   // When viewing info, next/prev buttons simply move steps
   prevBtn.onclick = () => { prevStep(); uiStep--; renderStep(); };
   nextBtn.onclick = () => { nextStep(); uiStep++; renderStep(); };
+};
+
+// --- Power Carousel ---
+window.displayPowerCarousel = function (powers) {
+  content.innerHTML = '';
+  if (!powers || powers.length === 0) {
+    content.innerHTML = '<p>No powers loaded!</p>';
+    return;
+  }
+
+  // Clamp for bounds
+  if (powerIndex < 0) powerIndex = 0;
+  if (powerIndex > powers.length - 2) powerIndex = powers.length - 2;
+
+  // Show 2 powers at a time
+  for (let i = powerIndex; i < Math.min(powerIndex + 2, powers.length); i++) {
+    const power = powers[i];
+    // --- Assume each power has: name, description, tree, levels (array), etc.
+    let levelsHtml = '';
+    (power.levels || []).forEach((lvl, idx) => {
+      levelsHtml += `
+        <li>
+          <b>Level ${idx}</b>: ${lvl.name} <br>
+          <i>${lvl.description}</i>
+          <span>Cost: ${lvl.cost} point${lvl.cost !== 1 ? 's' : ''}</span>
+        </li>`;
+    });
+
+    const isSelected = selectedPower && selectedPower.name === power.name;
+    const card = document.createElement('div');
+    card.className = 'carousel-card neon-frame';
+    card.innerHTML = `
+      <h2>${power.name}</h2>
+      <p>${power.description || ''}</p>
+      <p><b>Power Tree:</b> ${power.tree || 'N/A'}</p>
+      <ul>${levelsHtml}</ul>
+      <button class="select-power-btn" data-idx="${i}" ${isSelected ? 'disabled' : ''}>
+        ${isSelected ? 'Selected' : 'Select'}
+      </button>
+    `;
+    content.appendChild(card);
+
+    // If selected, show level selection panel
+    if (isSelected) {
+      const details = document.createElement('div');
+      details.innerHTML = `
+        <p>Allocate PowerPoints to levels (Max: ${powerPoints})</p>
+        <div>
+          ${power.levels.map((lvl, idx) => `
+            <label>
+              <input type="radio" name="powerLevel" value="${idx}" ${idx === (selectedLevels[power.name] || 0) ? 'checked' : ''} ${lvl.cost > powerPoints ? 'disabled' : ''}>
+              Level ${idx} (${lvl.name}) - Cost: ${lvl.cost}
+            </label>
+            <br>
+          `).join('')}
+        </div>
+        <button id="confirmPowerLevel">Confirm</button>
+      `;
+      card.appendChild(details);
+
+      // Confirm level
+      details.querySelector('#confirmPowerLevel').onclick = () => {
+        const sel = details.querySelector('input[name="powerLevel"]:checked');
+        const chosenLevel = parseInt(sel.value);
+        // Check total cost
+        if (power.levels[chosenLevel].cost <= powerPoints) {
+          selectedLevels[power.name] = power.levels[chosenLevel].cost;
+          // Call the CharacterCreation.js method
+          window.selectSuperpower(power.name, chosenLevel);
+          // Advance UI (or show confirmation)
+          uiStep++;
+          renderStep();
+        } else {
+          alert('Not enough PowerPoints!');
+        }
+      };
+    }
+  }
+
+  // Carousel Prev/Next
+  prevBtn.disabled = powerIndex === 0;
+  nextBtn.disabled = powerIndex >= powers.length - 2;
+  prevBtn.onclick = () => {
+    if (powerIndex > 0) {
+      powerIndex--;
+      window.displayPowerCarousel(powers);
+    }
+  };
+  nextBtn.onclick = () => {
+    if (powerIndex < powers.length - 2) {
+      powerIndex++;
+      window.displayPowerCarousel(powers);
+    }
+  };
+
+  // Handle selection
+  Array.from(document.getElementsByClassName('select-power-btn')).forEach(btn => {
+    btn.onclick = () => {
+      const idx = btn.dataset.idx;
+      selectedPower = powers[idx];
+      window.displayPowerCarousel(powers); // Redraw to show ability panel
+    };
+  });
 };
 window.displayPersonaBuilder = window.displayPersonaStep; // <-- this covers the "preset or build" screen
 
