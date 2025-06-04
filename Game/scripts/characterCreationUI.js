@@ -56,11 +56,7 @@ nextBtn.onclick = () => {
   uiStep++;
   renderStep();
 };
-prevBtn.onclick = () => {
-  prevStep();
-  uiStep--;
-  renderStep();
-};
+prevBtn.onclick = () => {};
 stepBackBtn.onclick = () => {
   prevStep();
   uiStep--;
@@ -279,17 +275,12 @@ window.displayTrainingCarousel = function (trainings) {
 
   // Configure carousel navigation using the global prev/next buttons
   // Always enable the back button so the user can return to the Profession step
-  prevBtn.disabled = false;
+  prevBtn.disabled = trainingIndex === 0;
   nextBtn.disabled = trainingIndex === trainings.length - 1;
   prevBtn.onclick = () => {
     if (trainingIndex > 0) {
       trainingIndex--;
       window.displayTrainingCarousel(trainings);
-    } else {
-      // At the first card, go back to the Profession step
-      prevStep();
-      uiStep--;
-      renderStep();
     }
   };
   nextBtn.onclick = () => {
@@ -408,6 +399,7 @@ const personaFields = [
 
 // Tracks temporary values during build
 let buildPersona = {};
+let featureSelections = new Set();
 
 function showPersonaBuilder() {
   if (!personaData || !personaData.personalityTypes) {
@@ -426,6 +418,7 @@ function showPersonaBuilder() {
       return;
     }
     Object.assign(playerPersona, buildPersona);
+    window.setPersonaOnCharacter();
     nextStep();
     uiStep++;
     renderStep();
@@ -447,7 +440,7 @@ function showPersonaBuilder() {
         height: document.getElementById('height').value,
         build: document.getElementById('build').value,
         skinTone: document.getElementById('skinTone').value,
-        features: Array.from(document.getElementById('features').selectedOptions).map(o => o.value),
+        features: Array.from(featureSelections),
         voice: document.getElementById('voice').value,
         description: document.getElementById('desc').value
       };
@@ -467,8 +460,11 @@ function showPersonaBuilder() {
     const selected = new Set();
     ['positive','neutral','negative'].forEach(cat => {
       const col = document.createElement('div');
-      col.className = 'trait-col';
-      col.innerHTML = `<h4>${cat.charAt(0).toUpperCase()+cat.slice(1)}</h4>`;
+      col.className = 'trait-col silver-frame';
+      const head = document.createElement('h4');
+      head.textContent = cat.charAt(0).toUpperCase()+cat.slice(1);
+      const list = document.createElement('div');
+      list.className = 'trait-list scroll-column';
       (cats[cat] || []).forEach(name => {
         const card = document.createElement('div');
         card.className = 'option-card';
@@ -481,8 +477,10 @@ function showPersonaBuilder() {
           checkValid();
         };
         card.onkeydown = e => { if(e.key==='Enter') card.click(); };
-        col.appendChild(card);
+        list.appendChild(card);
       });
+      col.appendChild(head);
+      col.appendChild(list);
       container.appendChild(col);
     });
     content.appendChild(container);
@@ -491,34 +489,55 @@ function showPersonaBuilder() {
       return selected.size === 5;
     };
   } else if (field.key === 'contacts') {
-    const cats = {};
+    const cats = { Positive: [], Neutral: [], Negative: [] };
     personaData.contacts.forEach((c,i) => { if(!cats[c.category]) cats[c.category] = []; cats[c.category].push({c,i}); });
     const counter = document.createElement('div');
     counter.id = 'contact-count';
     counter.textContent = 'Selected: 0/3';
     content.appendChild(counter);
+    const container = document.createElement('div');
+    container.id = 'contacts-container';
+    content.appendChild(container);
     const selected = new Set();
+
+    const showTip = (card, txt) => {
+      const tip = document.createElement('div');
+      tip.className = 'tooltip silver-frame';
+      tip.textContent = txt;
+      document.body.appendChild(tip);
+      const r = card.getBoundingClientRect();
+      tip.style.left = r.right + 4 + 'px';
+      tip.style.top = r.top + 'px';
+      card._tip = tip;
+    };
+    const hideTip = (card) => { if(card._tip){ document.body.removeChild(card._tip); card._tip=null; } };
+
     Object.keys(cats).forEach(cat => {
-      const sec = document.createElement('div');
-      sec.innerHTML = `<h4>${cat}</h4>`;
-      const row = document.createElement('div');
-      row.className = 'scroll-row';
+      const col = document.createElement('div');
+      col.className = 'contact-col silver-frame';
+      const head = document.createElement('h4');
+      head.textContent = cat;
+      const list = document.createElement('div');
+      list.className = 'contact-list scroll-column';
       cats[cat].forEach(obj => {
         const card = document.createElement('div');
         card.className = 'option-card';
         card.tabIndex = 0;
-        card.textContent = `${obj.c.name}`;
+        card.textContent = obj.c.name;
+        card.onmouseenter = () => showTip(card, `${obj.c.relationship} - ${obj.c.note}`);
+        card.onmouseleave = () => hideTip(card);
         card.onclick = () => {
           if (selected.has(obj.i)) { selected.delete(obj.i); card.classList.remove('selected'); }
           else if (selected.size < 3) { selected.add(obj.i); card.classList.add('selected'); }
           counter.textContent = `Selected: ${selected.size}/3`;
           checkValid();
         };
-        card.onkeydown = (e)=>{ if(e.key==='Enter') card.click(); };
-        row.appendChild(card);
+        card.onkeydown = e => { if(e.key==='Enter') card.click(); };
+        list.appendChild(card);
       });
-      sec.appendChild(row);
-      content.appendChild(sec);
+      col.appendChild(head);
+      col.appendChild(list);
+      container.appendChild(col);
     });
     validator = (checkOnly=false) => {
       if(!checkOnly) buildPersona.contacts = Array.from(selected).map(i => personaData.contacts[i]);
@@ -619,12 +638,9 @@ function showPersonaBuilder() {
     }
   };
 
+  prevBtn.disabled = personaStep === 0;
   prevBtn.onclick = () => {
-    if (personaStep === 0) {
-      prevStep();
-      uiStep--;
-      renderStep();
-    } else {
+    if (personaStep > 0) {
       personaStep--;
       showPersonaBuilder();
     }
@@ -641,10 +657,28 @@ function showAppearanceBuilder() {
     <label>Height: <select class="custom-select" id="height">${opts.height.map(c => `<option>${c}</option>`)}</select></label><br>
     <label>Build: <select class="custom-select" id="build">${opts.build.map(c => `<option>${c}</option>`)}</select></label><br>
     <label>Skin Tone: <select class="custom-select" id="skinTone">${opts.skinTones.map(c => `<option>${c}</option>`)}</select></label><br>
-    <label>Features: <select multiple class="custom-select" id="features">${opts.features.map(c => `<option>${c}</option>`)}</select></label><br>
+    <div id="features-area" class="silver-frame">
+      <h4>Features</h4>
+      <div id="feature-grid" class="feature-grid"></div>
+    </div><br>
     <label>Voice: <select class="custom-select" id="voice">${opts.voice.map(c => `<option>${c}</option>`)}</select></label><br>
     <label>Description: <textarea id="desc" class="styled-input" rows="2" placeholder="Your description"></textarea></label><br>
   `;
+
+  const grid = document.getElementById('feature-grid');
+  featureSelections = new Set(featureSelections);
+  opts.features.forEach(f => {
+    const card = document.createElement('div');
+    card.className = 'feature-card option-card';
+    card.textContent = f;
+    if (featureSelections.has(f)) card.classList.add('selected');
+    card.onclick = () => {
+      if (featureSelections.has(f)) { featureSelections.delete(f); card.classList.remove('selected'); }
+      else { featureSelections.add(f); card.classList.add('selected'); }
+    };
+    grid.appendChild(card);
+  });
+
 }
 const requiredFields = [
   "personality", "motivation", "plan", "hardship", "goals",
@@ -665,7 +699,7 @@ function allPersonaFieldsFilled(obj) {
 window.displaySkillSelection = function(skills) {
   content.innerHTML = '';
   const grid = document.createElement('div');
-  grid.className = 'skill-grid';
+  grid.className = 'skill-grid silver-frame';
   let chosen = null;
   skills.forEach(skill => {
     const card = document.createElement('div');
@@ -684,9 +718,9 @@ window.displaySkillSelection = function(skills) {
     grid.appendChild(card);
   });
   content.appendChild(grid);
-  prevBtn.disabled = false;
+  prevBtn.disabled = true;
   nextBtn.disabled = true;
-  prevBtn.onclick = () => { prevStep(); uiStep--; renderStep(); };
+  prevBtn.onclick = () => {};
   nextBtn.onclick = () => {};
 };
 
@@ -720,16 +754,12 @@ window.displayPowerCarousel = function (powers) {
     card.onkeydown = (e)=>{ if(e.key==='Enter') card.click(); if(e.key==='Escape'){ prevStep(); uiStep--; renderStep(); } };
     content.appendChild(card);
 
-    prevBtn.disabled = false;
+    prevBtn.disabled = powerIndex === 0;
     nextBtn.disabled = powerIndex === powers.length - 1;
     prevBtn.onclick = () => {
       if (powerIndex > 0) {
         powerIndex--;
         window.displayPowerCarousel(powers);
-      } else {
-        prevStep();
-        uiStep--;
-        renderStep();
       }
     };
     nextBtn.onclick = () => { if (powerIndex < powers.length - 1) { powerIndex++; window.displayPowerCarousel(powers); } };
@@ -856,9 +886,9 @@ window.displayEraSelector = function () {
     content.appendChild(card);
   });
 
-  prevBtn.disabled = false;
+  prevBtn.disabled = true;
   nextBtn.disabled = true;
-  prevBtn.onclick = () => { prevStep(); uiStep--; renderStep(); };
+  prevBtn.onclick = () => {};
   nextBtn.onclick = () => {};
 };
 
@@ -931,9 +961,9 @@ window.displayCharacterSheet = function (charData) {
   content.appendChild(container);
 
   nextBtn.textContent = 'Confirm';
-  prevBtn.disabled = false;
+  prevBtn.disabled = true;
   nextBtn.disabled = false;
-  prevBtn.onclick = () => { prevStep(); uiStep--; renderStep(); };
+  prevBtn.onclick = () => {};
   nextBtn.onclick = () => { nextStep(); uiStep++; renderStep(); };
 };
 window.displayPersonaBuilder = window.displayPersonaStep; // <-- this covers the "preset or build" screen

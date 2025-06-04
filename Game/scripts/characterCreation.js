@@ -270,3 +270,4 @@ window.selectProfession = selectProfession;
 window.selectSuperpower = selectSuperpower;
 window.selectEra = selectEra;
 window.selectStartingSkill = selectStartingSkill;
+window.setPersonaOnCharacter = setPersonaOnCharacter;
