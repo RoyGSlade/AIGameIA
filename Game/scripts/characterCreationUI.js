@@ -234,7 +234,7 @@ window.displayTrainingCarousel = function(trainings, selectedIdx = 0) {
     btn.onclick = () => {
       // Pass the major and the school name to selectTraining
       const major = t.majors.find(m => m.name === btn.dataset.major);
-      window.selectTraining(t.name, major.attribute, major.skill);
+      window.selectTraining(t.name, major.name, major.attribute, major.skill);
       // Move to next step (Persona builder)
       uiStep++;
       renderStep();
