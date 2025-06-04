@@ -1,5 +1,7 @@
 // characterCreation.js
 
+import { saveCharacter as persistCharacter, clearSavedCharacter } from './saveManager.js';
+
 // --- Game Data (mutable, shared across modules) ---
 export const gameData = {
   races: [],
@@ -240,7 +242,7 @@ export function displaySummaryStep() {
 }
 export function finalizeCharacter() {
   character.inspiration = true;
-  saveCharacter(character);
+  persistCharacter(character);
   showPrompt(`You gain inspiration for completing character creation. Let's play!`);
   if (window.parent && window.parent.setState) window.parent.setState('mainGame');
 }
@@ -257,12 +259,8 @@ export function selectStartingSkill(skillName) {
   addOrLevelSkill(skillName, 1);
 }
 
-function saveCharacter(charObj) {
-  localStorage.setItem('currentCharacter', JSON.stringify(charObj));
-}
-
 export function resetSavedCharacter() {
-  localStorage.removeItem('currentCharacter');
+  clearSavedCharacter();
 }
 
 // UI helper stubs (will be overwritten by UI file)
