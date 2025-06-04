@@ -178,6 +178,9 @@ button:focus { outline: 2px solid #14f1e1; }
   padding: 1rem 1.3rem;
   box-shadow: 0 0 8px #63e0ff55;
   margin-bottom: 0.5rem;
+  /* Slightly smaller to fit inside the carousel */
+  width: 80%;
+  align-self: center;
   cursor: pointer;
   transition: box-shadow 0.3s, transform 0.3s;
 }
@@ -308,4 +311,32 @@ button:focus { outline: 2px solid #14f1e1; }
 
 #trait-count, #contact-count {
   margin-bottom: 0.5rem;
+}
+
+/* Vertical scrolling column for persona options */
+.scroll-column {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  max-height: 50vh;
+  gap: 0.8rem;
+}
+
+/* Styled text inputs used across persona builder */
+.styled-input {
+  background: rgba(29,34,51,0.9);
+  border: 1px solid #35f1f9;
+  border-radius: 8px;
+  padding: 0.4rem 0.6rem;
+  color: #e0e5ff;
+}
+
+#goals-container {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+}
+
+.goal-col {
+  flex: 1;
 }

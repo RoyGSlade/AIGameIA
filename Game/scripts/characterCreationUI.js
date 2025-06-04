@@ -62,6 +62,10 @@ prevBtn.onclick = () => {
 };
 
 function renderStep() {
+  nextBtn.textContent = 'Next';
+  prevBtn.textContent = 'Back';
+  nextBtn.disabled = false;
+  prevBtn.disabled = false;
   trainingPanel.style.display = uiStep === 2 ? 'block' : 'none';
   updateProgressNav(uiStep);
   switch (uiStep) {
@@ -267,12 +271,18 @@ window.displayTrainingCarousel = function (trainings) {
   });
 
   // Configure carousel navigation using the global prev/next buttons
-  prevBtn.disabled = trainingIndex === 0;
+  // Always enable the back button so the user can return to the Profession step
+  prevBtn.disabled = false;
   nextBtn.disabled = trainingIndex === trainings.length - 1;
   prevBtn.onclick = () => {
     if (trainingIndex > 0) {
       trainingIndex--;
       window.displayTrainingCarousel(trainings);
+    } else {
+      // At the first card, go back to the Profession step
+      prevStep();
+      uiStep--;
+      renderStep();
     }
   };
   nextBtn.onclick = () => {
@@ -509,38 +519,75 @@ function showPersonaBuilder() {
     };
   } else if (field.key === 'goals') {
     content.innerHTML = `
-      <label>Short-term Goal: <input id="goal-short" type="text" placeholder="Short-term goal"></label><br>
-      <label>Long-term Goal: <input id="goal-long" type="text" placeholder="Long-term goal"></label><br>
-      <button id="random-goal" class="select-btn">Random</button>
+      <div id="goals-container">
+        <div id="short-col" class="goal-col scroll-column"></div>
+        <div id="long-col" class="goal-col scroll-column"></div>
+      </div>
     `;
-    document.getElementById('random-goal').onclick = () => {
-      const r = personaData.goals[Math.floor(Math.random() * personaData.goals.length)];
-      document.getElementById('goal-short').value = r.short;
-      document.getElementById('goal-long').value = r.long;
-      checkValid();
-    };
-    ['input'].forEach(evt => {
-      document.getElementById('goal-short').addEventListener(evt, () => checkValid());
-      document.getElementById('goal-long').addEventListener(evt, () => checkValid());
+    const shortCol = document.getElementById('short-col');
+    const longCol = document.getElementById('long-col');
+    let chosenShort = null;
+    let chosenLong = null;
+    personaData.goals.forEach(g => {
+      const s = document.createElement('div');
+      s.className = 'option-card';
+      s.textContent = g.short;
+      s.onclick = () => {
+        if (chosenShort) chosenShort.classList.remove('selected');
+        s.classList.add('selected');
+        chosenShort = s;
+        checkValid();
+      };
+      shortCol.appendChild(s);
+      const l = document.createElement('div');
+      l.className = 'option-card';
+      l.textContent = g.long;
+      l.onclick = () => {
+        if (chosenLong) chosenLong.classList.remove('selected');
+        l.classList.add('selected');
+        chosenLong = l;
+        checkValid();
+      };
+      longCol.appendChild(l);
     });
     validator = (checkOnly=false) => {
-      const short = document.getElementById('goal-short').value.trim();
-      const long = document.getElementById('goal-long').value.trim();
-      if (!checkOnly) buildPersona.goals = { short, long };
-      return short !== '' && long !== '';
+      if (!checkOnly) buildPersona.goals = {
+        short: chosenShort ? chosenShort.textContent : '',
+        long: chosenLong ? chosenLong.textContent : ''
+      };
+      return chosenShort && chosenLong;
     };
   } else {
-    content.innerHTML = field.options().map(opt =>
-      `<label><input type="radio" name="${field.key}" value="${opt}"> ${opt}</label><br>`
-    ).join('');
-    content.innerHTML += `<br><label>Write your own: <input type="text" id="custom-${field.key}" placeholder="Your answer"></label>`;
-    const inputs = content.querySelectorAll('input');
-    inputs.forEach(i => i.addEventListener('input', () => checkValid()));
-    inputs.forEach(i => i.addEventListener('change', () => checkValid()));
+    const col = document.createElement('div');
+    col.className = 'scroll-column';
+    let chosen = null;
+    field.options().forEach(opt => {
+      const card = document.createElement('div');
+      card.className = 'option-card';
+      card.textContent = opt;
+      card.tabIndex = 0;
+      card.onclick = () => {
+        if (chosen) chosen.classList.remove('selected');
+        card.classList.add('selected');
+        chosen = card;
+        checkValid();
+      };
+      card.onkeydown = e => { if(e.key==='Enter') card.click(); };
+      col.appendChild(card);
+    });
+    content.appendChild(col);
+    const customLabel = document.createElement('label');
+    customLabel.innerHTML = `Write your own:`;
+    const customInput = document.createElement('input');
+    customInput.id = `custom-${field.key}`;
+    customInput.className = 'styled-input';
+    customInput.placeholder = 'Your answer';
+    customInput.addEventListener('input', () => { if(chosen) { chosen.classList.remove('selected'); chosen=null; } checkValid(); });
+    customLabel.appendChild(customInput);
+    content.appendChild(customLabel);
     validator = (checkOnly=false) => {
-      const selected = document.querySelector(`input[name="${field.key}"]:checked`);
-      const custom = document.getElementById(`custom-${field.key}`).value.trim();
-      const val = custom || (selected && selected.value) || '';
+      const custom = customInput.value.trim();
+      const val = custom || (chosen && chosen.textContent) || '';
       if (!checkOnly) buildPersona[field.key] = val;
       return val !== '';
     };
@@ -582,7 +629,7 @@ function showAppearanceBuilder() {
     <label>Skin Tone: <select class="custom-select" id="skinTone">${opts.skinTones.map(c => `<option>${c}</option>`)}</select></label><br>
     <label>Features: <select multiple class="custom-select" id="features">${opts.features.map(c => `<option>${c}</option>`)}</select></label><br>
     <label>Voice: <select class="custom-select" id="voice">${opts.voice.map(c => `<option>${c}</option>`)}</select></label><br>
-    <label>Description: <textarea id="desc" rows="2" placeholder="Your description"></textarea></label><br>
+    <label>Description: <textarea id="desc" class="styled-input" rows="2" placeholder="Your description"></textarea></label><br>
   `;
 }
 const requiredFields = [
@@ -659,9 +706,18 @@ window.displayPowerCarousel = function (powers) {
     card.onkeydown = (e)=>{ if(e.key==='Enter') card.click(); if(e.key==='Escape'){ prevStep(); uiStep--; renderStep(); } };
     content.appendChild(card);
 
-    prevBtn.disabled = powerIndex === 0;
+    prevBtn.disabled = false;
     nextBtn.disabled = powerIndex === powers.length - 1;
-    prevBtn.onclick = () => { if (powerIndex > 0) { powerIndex--; window.displayPowerCarousel(powers); } };
+    prevBtn.onclick = () => {
+      if (powerIndex > 0) {
+        powerIndex--;
+        window.displayPowerCarousel(powers);
+      } else {
+        prevStep();
+        uiStep--;
+        renderStep();
+      }
+    };
     nextBtn.onclick = () => { if (powerIndex < powers.length - 1) { powerIndex++; window.displayPowerCarousel(powers); } };
 
     // navigation handled on card click
@@ -680,8 +736,9 @@ function showPowerTree(tree, powers) {
 
   let remaining = powerPoints - chosenPowers.reduce((a,p)=>a+p.level,0);
   const grouped = {};
+  const hasL1 = chosenPowers.some(p => p.level === 1);
   tree.levels.forEach(l => {
-    if (l.level > 0 && l.level <= powerPoints) {
+    if (l.level === 1 || (hasL1 && l.level > 1 && l.level <= powerPoints)) {
       if (!grouped[l.level]) grouped[l.level] = [];
       grouped[l.level].push(l);
     }
