@@ -215,3 +215,33 @@ button:focus { outline: 2px solid #14f1e1; }
   opacity: 1;
   color: #fff;
 }
+
+/* --- Power Selection Layout --- */
+.power-tree-card {
+  max-width: 700px;
+  width: 100%;
+  padding: 1rem;
+}
+
+.power-tree-info {
+  margin-bottom: 1rem;
+}
+
+.power-level-section {
+  margin-bottom: 1.5rem;
+}
+
+.power-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.power-card {
+  background: #1d2233;
+  border: 1.5px solid #35f1f9;
+  border-radius: 10px;
+  padding: 1rem;
+  flex: 1 1 260px;
+  max-width: 300px;
+}

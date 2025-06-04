@@ -210,11 +210,16 @@ export function displaySuperpowerStep() {
   );
   window.displayPowerCarousel(gameData.powers);
 }
-export function selectSuperpower(powerName, pointsSpent) {
-  const power = gameData.powers.find(p => p.name === powerName);
-  if (!power) return;
-  character.superpowers.push({ name: powerName, level: pointsSpent });
-  character.powerPoints = pointsSpent;
+export function selectSuperpower(treeName, powerObj) {
+  const tree = gameData.powers.find(p => p.name === treeName);
+  if (!tree || !powerObj) return;
+  // powerObj should include at least { power, level }
+  character.superpowers.push({
+    tree: treeName,
+    power: powerObj.power,
+    level: powerObj.level
+  });
+  character.powerPoints += powerObj.level;
 }
 
 // --- STEP 7: Era ---

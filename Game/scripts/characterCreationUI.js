@@ -154,10 +154,10 @@ window.displayRaceCarousel = function (races) {
 // --- Carousel State ---
 let professionIndex = 0;
 let trainingIndex = 0;
-let powerIndex = 0;
-let powerPoints = 2; // Starting PowerPoints (could be dynamic)
-let selectedPower = null;
-let selectedLevels = {}; // Track points spent per power
+let powerIndex = 0; // index for choosing a power tree
+let powerPoints = 2; // Starting PowerPoints
+let selectedTree = null;
+let chosenPowers = []; // store selected powers for the chosen tree
 
 // --- Professions Carousel ---
 window.displayProfessionCarousel = function (professions) {
@@ -578,100 +578,99 @@ window.displayPowerCarousel = function (powers) {
     return;
   }
 
-  // Clamp for bounds
-  if (powerIndex < 0) powerIndex = 0;
-  if (powerIndex > powers.length - 2) powerIndex = powers.length - 2;
+  if (!selectedTree) {
+    if (powerIndex < 0) powerIndex = 0;
+    if (powerIndex > powers.length - 1) powerIndex = powers.length - 1;
 
-  // Show 2 powers at a time
-  for (let i = powerIndex; i < Math.min(powerIndex + 2, powers.length); i++) {
-    const power = powers[i];
-    // --- Assume each power has: name, description, tree, levels (array), etc.
-    let levelsHtml = '';
-    (power.levels || []).forEach((lvl, idx) => {
-      levelsHtml += `
-        <li>
-          <b>Level ${idx}</b>: ${lvl.name} <br>
-          <i>${lvl.description}</i>
-          <span>Cost: ${lvl.cost} point${lvl.cost !== 1 ? 's' : ''}</span>
-        </li>`;
-    });
-
-    const isSelected = selectedPower && selectedPower.name === power.name;
+    const tree = powers[powerIndex];
     const card = document.createElement('div');
-    card.className = 'carousel-card neon-frame';
+    card.className = 'carousel-card neon-frame power-tree-card';
     card.innerHTML = `
-      <h2>${power.name}</h2>
-      <p>${power.description || ''}</p>
-      <p><b>Power Tree:</b> ${power.tree || 'N/A'}</p>
-      <ul>${levelsHtml}</ul>
-      <button class="select-power-btn" data-idx="${i}" ${isSelected ? 'disabled' : ''}>
-        ${isSelected ? 'Selected' : 'Select'}
-      </button>
+      <h2>${tree.name}</h2>
+      <p>${tree.description || ''}</p>
+      <button class="select-power-tree" data-idx="${powerIndex}">Select</button>
     `;
     content.appendChild(card);
 
-    // If selected, show level selection panel
-    if (isSelected) {
-      const details = document.createElement('div');
-      details.innerHTML = `
-        <p>Allocate PowerPoints to levels (Max: ${powerPoints})</p>
-        <div>
-          ${power.levels.map((lvl, idx) => `
-            <label>
-              <input type="radio" name="powerLevel" value="${idx}" ${idx === (selectedLevels[power.name] || 0) ? 'checked' : ''} ${lvl.cost > powerPoints ? 'disabled' : ''}>
-              Level ${idx} (${lvl.name}) - Cost: ${lvl.cost}
-            </label>
-            <br>
-          `).join('')}
-        </div>
-        <button id="confirmPowerLevel">Confirm</button>
-      `;
-      card.appendChild(details);
+    prevBtn.disabled = powerIndex === 0;
+    nextBtn.disabled = powerIndex === powers.length - 1;
+    prevBtn.onclick = () => { if (powerIndex > 0) { powerIndex--; window.displayPowerCarousel(powers); } };
+    nextBtn.onclick = () => { if (powerIndex < powers.length - 1) { powerIndex++; window.displayPowerCarousel(powers); } };
 
-      // Confirm level
-      details.querySelector('#confirmPowerLevel').onclick = () => {
-        const sel = details.querySelector('input[name="powerLevel"]:checked');
-        const chosenLevel = parseInt(sel.value);
-        // Check total cost
-        if (power.levels[chosenLevel].cost <= powerPoints) {
-          selectedLevels[power.name] = power.levels[chosenLevel].cost;
-          // Call the CharacterCreation.js method
-          window.selectSuperpower(power.name, chosenLevel);
-          // Advance UI (or show confirmation)
-          uiStep++;
-          renderStep();
-        } else {
-          alert('Not enough PowerPoints!');
+    card.querySelector('.select-power-tree').onclick = () => {
+      selectedTree = tree;
+      // auto-add level 0 power if present
+      const lvl0 = tree.levels.find(l => l.level === 0);
+      if (lvl0) chosenPowers.push(lvl0);
+      window.displayPowerCarousel(powers);
+    };
+  } else {
+    showPowerTree(selectedTree, powers);
+  }
+};
+
+function showPowerTree(tree, powers) {
+  content.innerHTML = '';
+  const info = document.createElement('div');
+  info.className = 'power-tree-info';
+  info.innerHTML = `<h2>${tree.name}</h2><p>${tree.description || ''}</p>`;
+  content.appendChild(info);
+
+  let remaining = powerPoints - chosenPowers.reduce((a,p)=>a+p.level,0);
+  const grouped = {};
+  tree.levels.forEach(l => {
+    if (l.level > 0 && l.level <= powerPoints) {
+      if (!grouped[l.level]) grouped[l.level] = [];
+      grouped[l.level].push(l);
+    }
+  });
+
+  Object.keys(grouped).sort((a,b)=>a-b).forEach(lvl => {
+    const section = document.createElement('div');
+    section.className = 'power-level-section';
+    section.innerHTML = `<h3>Level ${lvl} Powers (Cost ${lvl})</h3>`;
+    const grid = document.createElement('div');
+    grid.className = 'power-grid';
+    grouped[lvl].forEach(p => {
+      const card = document.createElement('div');
+      const already = chosenPowers.find(cp => cp.power === p.power);
+      card.className = 'power-card';
+      card.innerHTML = `
+        <h4>${p.power}</h4>
+        <p><b>Activation:</b> ${p.activation_cost}</p>
+        <p><b>Duration:</b> ${p.duration}</p>
+        <p><b>Range:</b> ${p.range}</p>
+        <p><b>Uses:</b> ${p.uses}</p>
+        <p>${p.effect}</p>
+        <button class="choose-power" ${already || p.level > remaining ? 'disabled' : ''}>${already ? 'Selected' : 'Choose'}</button>
+      `;
+      card.querySelector('.choose-power').onclick = () => {
+        if (p.level <= remaining && !already) {
+          chosenPowers.push(p);
+          showPowerTree(tree, powers);
         }
       };
-    }
-  }
-
-  // Carousel Prev/Next
-  prevBtn.disabled = powerIndex === 0;
-  nextBtn.disabled = powerIndex >= powers.length - 2;
-  prevBtn.onclick = () => {
-    if (powerIndex > 0) {
-      powerIndex--;
-      window.displayPowerCarousel(powers);
-    }
-  };
-  nextBtn.onclick = () => {
-    if (powerIndex < powers.length - 2) {
-      powerIndex++;
-      window.displayPowerCarousel(powers);
-    }
-  };
-
-  // Handle selection
-  Array.from(document.getElementsByClassName('select-power-btn')).forEach(btn => {
-    btn.onclick = () => {
-      const idx = btn.dataset.idx;
-      selectedPower = powers[idx];
-      window.displayPowerCarousel(powers); // Redraw to show ability panel
-    };
+      grid.appendChild(card);
+    });
+    section.appendChild(grid);
+    content.appendChild(section);
   });
-};
+
+  const confirm = document.createElement('button');
+  confirm.className = 'select-btn';
+  confirm.textContent = 'Confirm Powers';
+  confirm.onclick = () => {
+    chosenPowers.forEach(cp => window.selectSuperpower(tree.name, cp));
+    uiStep++;
+    renderStep();
+  };
+  content.appendChild(confirm);
+
+  prevBtn.disabled = false;
+  nextBtn.disabled = true;
+  prevBtn.onclick = () => { selectedTree = null; chosenPowers = []; window.displayPowerCarousel(powers); };
+  nextBtn.onclick = () => {};
+}
 window.displayPersonaBuilder = window.displayPersonaStep; // <-- this covers the "preset or build" screen
 
 
