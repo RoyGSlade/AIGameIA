@@ -26,6 +26,7 @@ const content = document.getElementById('carousel-content');
 const prompt = document.getElementById('prompt-text');
 const prevBtn = document.getElementById('prev-btn');
 const nextBtn = document.getElementById('next-btn');
+const trainingPanel = document.getElementById('training-panel');
 
 let uiStep = 0;
 
@@ -47,6 +48,7 @@ prevBtn.onclick = () => {
 };
 
 function renderStep() {
+  trainingPanel.style.display = uiStep === 2 ? 'block' : 'none';
   switch (uiStep) {
     case 0: displayRaceStep(); break;
     case 1: displayProfessionStep(); break;
@@ -198,6 +200,7 @@ window.displayProfessionCarousel = function (professions) {
 window.displayTrainingCarousel = function (trainings) {
   if (!trainings || trainings.length === 0) {
     content.innerHTML = '<p>No trainings loaded!</p>';
+    trainingPanel.style.display = 'none';
     return;
   }
 
@@ -207,17 +210,16 @@ window.displayTrainingCarousel = function (trainings) {
 
   const t = trainings[trainingIndex];
 
-  const left = `
-    <div class="training-school neon-frame">
-      <h2>${t.name}</h2>
-      <p>${t.description || ''}</p>
-      <ul>
-        <li><b>Armor Rating:</b> ${t.armorRating}</li>
-        <li><b>Initiative:</b> ${t.initiative > 0 ? '+' : ''}${t.initiative}</li>
-        <li><b>Hit Points:</b> ${t.hitPoints} + Constitution</li>
-      </ul>
-    </div>
+  trainingPanel.innerHTML = `
+    <h2>${t.name}</h2>
+    <p>${t.description || ''}</p>
+    <ul>
+      <li><b>Armor Rating:</b> ${t.armorRating}</li>
+      <li><b>Initiative:</b> ${t.initiative > 0 ? '+' : ''}${t.initiative}</li>
+      <li><b>Hit Points:</b> ${t.hitPoints} + Constitution</li>
+    </ul>
   `;
+  trainingPanel.style.display = 'block';
 
   let right = `<div class="training-majors">`;
   t.majors.forEach((major, idx) => {
@@ -235,7 +237,7 @@ window.displayTrainingCarousel = function (trainings) {
   });
   right += `</div>`;
 
-  content.innerHTML = `<div class="training-flex">${left}${right}</div>`;
+  content.innerHTML = right;
 
   // Attach button events
   Array.from(document.getElementsByClassName('select-major-btn')).forEach(btn => {
@@ -279,6 +281,7 @@ window.displayPersonaStep = function () {
 
   const usePresetBtn = document.createElement('button');
   usePresetBtn.textContent = "Use a Preset";
+  usePresetBtn.className = 'select-btn';
   usePresetBtn.onclick = () => {
     usePreset = true;
     personaStep = 0;
@@ -286,14 +289,17 @@ window.displayPersonaStep = function () {
   };
   const buildOwnBtn = document.createElement('button');
   buildOwnBtn.textContent = "Build My Own";
+  buildOwnBtn.className = 'select-btn';
   buildOwnBtn.onclick = () => {
     usePreset = false;
     personaStep = 0;
     showPersonaBuilder();
   };
-
-  content.appendChild(usePresetBtn);
-  content.appendChild(buildOwnBtn);
+  const optionsDiv = document.createElement('div');
+  optionsDiv.id = 'persona-options';
+  optionsDiv.appendChild(usePresetBtn);
+  optionsDiv.appendChild(buildOwnBtn);
+  content.appendChild(optionsDiv);
 };
 
 // ---- Preset Persona Carousel ----
