@@ -1,14 +1,13 @@
-import { readFileSync } from 'fs';
-import { dirname, join } from 'path';
-import { fileURLToPath } from 'url';
-
 let VERSION = '1.0.0';
 try {
-  const path = join(dirname(fileURLToPath(import.meta.url)), '../../schema.json');
-  const data = JSON.parse(readFileSync(path, 'utf8'));
-  VERSION = data.schemaVersion;
+  const url = new URL('../../schema.json', import.meta.url);
+  const res = await fetch(url);
+  if (res.ok) {
+    const data = await res.json();
+    VERSION = data.schemaVersion;
+  }
 } catch {
-  // Browser environment will fallback to this default
+  // Browser or test environment may fail to load schema; default remains
 }
 
 const STORAGE_KEY = 'currentCharacter';
