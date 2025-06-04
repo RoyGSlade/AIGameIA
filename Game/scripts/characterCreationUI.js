@@ -6,7 +6,7 @@ import {
   displayPersonaStep, displaySkillSystemStep, displaySuperpowerStep,
   displayEraStep, displaySummaryStep, finalizeCharacter,
   selectRace, selectProfession, selectTraining,
-  playerPersona, character
+  playerPersona, character, setPersonaOnCharacter
 } from './characterCreation.js';
 
 let personaData = null;
@@ -56,11 +56,7 @@ nextBtn.onclick = () => {
   uiStep++;
   renderStep();
 };
-prevBtn.onclick = () => {
-  prevStep();
-  uiStep--;
-  renderStep();
-};
+prevBtn.onclick = () => {};
 stepBackBtn.onclick = () => {
   prevStep();
   uiStep--;
@@ -285,11 +281,6 @@ window.displayTrainingCarousel = function (trainings) {
     if (trainingIndex > 0) {
       trainingIndex--;
       window.displayTrainingCarousel(trainings);
-    } else {
-      // At the first card, go back to the Profession step
-      prevStep();
-      uiStep--;
-      renderStep();
     }
   };
   nextBtn.onclick = () => {
@@ -426,6 +417,7 @@ function showPersonaBuilder() {
       return;
     }
     Object.assign(playerPersona, buildPersona);
+    setPersonaOnCharacter();
     nextStep();
     uiStep++;
     renderStep();
@@ -447,7 +439,7 @@ function showPersonaBuilder() {
         height: document.getElementById('height').value,
         build: document.getElementById('build').value,
         skinTone: document.getElementById('skinTone').value,
-        features: Array.from(document.getElementById('features').selectedOptions).map(o => o.value),
+        features: content.getSelectedFeatures(),
         voice: document.getElementById('voice').value,
         description: document.getElementById('desc').value
       };
@@ -456,6 +448,7 @@ function showPersonaBuilder() {
     };
     content.addEventListener('input', () => checkValid());
     content.addEventListener('change', () => checkValid());
+    content.addEventListener('click', () => checkValid());
   } else if (field.key === 'traits') {
     const cats = personaData.traits;
     const counter = document.createElement('div');
@@ -492,22 +485,28 @@ function showPersonaBuilder() {
     };
   } else if (field.key === 'contacts') {
     const cats = {};
-    personaData.contacts.forEach((c,i) => { if(!cats[c.category]) cats[c.category] = []; cats[c.category].push({c,i}); });
+    personaData.contacts.forEach((c,i) => {
+      const key = c.category.toLowerCase();
+      if(!cats[key]) cats[key] = [];
+      cats[key].push({c,i});
+    });
     const counter = document.createElement('div');
     counter.id = 'contact-count';
     counter.textContent = 'Selected: 0/3';
     content.appendChild(counter);
+    const container = document.createElement('div');
+    container.id = 'contacts-container';
     const selected = new Set();
-    Object.keys(cats).forEach(cat => {
-      const sec = document.createElement('div');
-      sec.innerHTML = `<h4>${cat}</h4>`;
-      const row = document.createElement('div');
-      row.className = 'scroll-row';
-      cats[cat].forEach(obj => {
+    ['positive','neutral','negative'].forEach(cat => {
+      const col = document.createElement('div');
+      col.className = 'contact-col';
+      col.innerHTML = `<h4>${cat.charAt(0).toUpperCase()+cat.slice(1)}</h4>`;
+      (cats[cat] || []).forEach(obj => {
         const card = document.createElement('div');
         card.className = 'option-card';
         card.tabIndex = 0;
         card.textContent = `${obj.c.name}`;
+        card.title = `${obj.c.relationship} - ${obj.c.note}`;
         card.onclick = () => {
           if (selected.has(obj.i)) { selected.delete(obj.i); card.classList.remove('selected'); }
           else if (selected.size < 3) { selected.add(obj.i); card.classList.add('selected'); }
@@ -515,11 +514,11 @@ function showPersonaBuilder() {
           checkValid();
         };
         card.onkeydown = (e)=>{ if(e.key==='Enter') card.click(); };
-        row.appendChild(card);
+        col.appendChild(card);
       });
-      sec.appendChild(row);
-      content.appendChild(sec);
+      container.appendChild(col);
     });
+    content.appendChild(container);
     validator = (checkOnly=false) => {
       if(!checkOnly) buildPersona.contacts = Array.from(selected).map(i => personaData.contacts[i]);
       return selected.size === 3;
@@ -620,11 +619,7 @@ function showPersonaBuilder() {
   };
 
   prevBtn.onclick = () => {
-    if (personaStep === 0) {
-      prevStep();
-      uiStep--;
-      renderStep();
-    } else {
+    if (personaStep > 0) {
       personaStep--;
       showPersonaBuilder();
     }
@@ -632,19 +627,58 @@ function showPersonaBuilder() {
 }
 
 function showAppearanceBuilder() {
-  // Present dropdowns for each appearance field with options, plus a freeform description at end
   const opts = personaData.appearanceDetails;
-  content.innerHTML = `
-    <label>Eye Color: <select class="custom-select" id="eyeColor">${opts.eyeColors.map(c => `<option>${c}</option>`)}</select></label><br>
-    <label>Hair Color: <select class="custom-select" id="hairColor">${opts.hairColors.map(c => `<option>${c}</option>`)}</select></label><br>
-    <label>Hair Style: <select class="custom-select" id="hairStyle">${opts.hairStyles.map(c => `<option>${c}</option>`)}</select></label><br>
-    <label>Height: <select class="custom-select" id="height">${opts.height.map(c => `<option>${c}</option>`)}</select></label><br>
-    <label>Build: <select class="custom-select" id="build">${opts.build.map(c => `<option>${c}</option>`)}</select></label><br>
-    <label>Skin Tone: <select class="custom-select" id="skinTone">${opts.skinTones.map(c => `<option>${c}</option>`)}</select></label><br>
-    <label>Features: <select multiple class="custom-select" id="features">${opts.features.map(c => `<option>${c}</option>`)}</select></label><br>
-    <label>Voice: <select class="custom-select" id="voice">${opts.voice.map(c => `<option>${c}</option>`)}</select></label><br>
-    <label>Description: <textarea id="desc" class="styled-input" rows="2" placeholder="Your description"></textarea></label><br>
-  `;
+  content.innerHTML = '';
+  const makeSelect = (id, values) => {
+    const label = document.createElement('label');
+    label.innerHTML = `${id.charAt(0).toUpperCase()+id.slice(1)}: `;
+    const sel = document.createElement('select');
+    sel.className = 'custom-select';
+    sel.id = id;
+    values.forEach(v => { const o = document.createElement('option'); o.textContent = v; sel.appendChild(o); });
+    label.appendChild(sel);
+    content.appendChild(label);
+    content.appendChild(document.createElement('br'));
+  };
+  makeSelect('eyeColor', opts.eyeColors);
+  makeSelect('hairColor', opts.hairColors);
+  makeSelect('hairStyle', opts.hairStyles);
+  makeSelect('height', opts.height);
+  makeSelect('build', opts.build);
+  makeSelect('skinTone', opts.skinTones);
+  const featureSec = document.createElement('div');
+  featureSec.id = 'features-section';
+  featureSec.innerHTML = '<h4>Features</h4>';
+  const featCol = document.createElement('div');
+  featCol.id = 'features-col';
+  featCol.className = 'feature-col';
+  const featSelected = new Set();
+  opts.features.forEach(f => {
+    const card = document.createElement('div');
+    card.className = 'option-card';
+    card.textContent = f;
+    card.onclick = () => {
+      if (featSelected.has(f)) { featSelected.delete(f); card.classList.remove('selected'); }
+      else { featSelected.add(f); card.classList.add('selected'); }
+    };
+    featCol.appendChild(card);
+  });
+  featureSec.appendChild(featCol);
+  content.appendChild(featureSec);
+  makeSelect('voice', opts.voice);
+  const descLabel = document.createElement('label');
+  descLabel.innerHTML = 'Description: ';
+  const txt = document.createElement('textarea');
+  txt.id = 'desc';
+  txt.className = 'styled-input';
+  txt.rows = 2;
+  txt.placeholder = 'Your description';
+  descLabel.appendChild(txt);
+  content.appendChild(descLabel);
+  content.appendChild(document.createElement('br'));
+  // expose selected features
+  content.dataset.selectedFeatures = featSelected;
+  content.getSelectedFeatures = () => Array.from(featSelected);
 }
 const requiredFields = [
   "personality", "motivation", "plan", "hardship", "goals",
@@ -686,7 +720,7 @@ window.displaySkillSelection = function(skills) {
   content.appendChild(grid);
   prevBtn.disabled = false;
   nextBtn.disabled = true;
-  prevBtn.onclick = () => { prevStep(); uiStep--; renderStep(); };
+  prevBtn.onclick = () => {};
   nextBtn.onclick = () => {};
 };
 
@@ -726,10 +760,6 @@ window.displayPowerCarousel = function (powers) {
       if (powerIndex > 0) {
         powerIndex--;
         window.displayPowerCarousel(powers);
-      } else {
-        prevStep();
-        uiStep--;
-        renderStep();
       }
     };
     nextBtn.onclick = () => { if (powerIndex < powers.length - 1) { powerIndex++; window.displayPowerCarousel(powers); } };
@@ -858,7 +888,7 @@ window.displayEraSelector = function () {
 
   prevBtn.disabled = false;
   nextBtn.disabled = true;
-  prevBtn.onclick = () => { prevStep(); uiStep--; renderStep(); };
+  prevBtn.onclick = () => {};
   nextBtn.onclick = () => {};
 };
 
@@ -933,7 +963,7 @@ window.displayCharacterSheet = function (charData) {
   nextBtn.textContent = 'Confirm';
   prevBtn.disabled = false;
   nextBtn.disabled = false;
-  prevBtn.onclick = () => { prevStep(); uiStep--; renderStep(); };
+  prevBtn.onclick = () => {};
   nextBtn.onclick = () => { nextStep(); uiStep++; renderStep(); };
 };
 window.displayPersonaBuilder = window.displayPersonaStep; // <-- this covers the "preset or build" screen

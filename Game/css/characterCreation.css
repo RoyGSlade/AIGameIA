@@ -5,6 +5,7 @@ body {
   font-family: 'Orbitron', 'Segoe UI', Arial, sans-serif;
   background: #0a0a18;
   color: #e0e5ff;
+  overflow-x: hidden;
 }
 
 #creation-bg {
@@ -265,10 +266,12 @@ button:focus { outline: 2px solid #14f1e1; }
 
 /* Skill selection */
 .skill-grid {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
-  justify-content: center;
+  max-height: 50vh;
+  overflow-y: auto;
+  width: 100%;
 }
 
 .skill-card {
@@ -355,6 +358,52 @@ button:focus { outline: 2px solid #14f1e1; }
   overflow-y: auto;
   max-height: 50vh;
   gap: 0.8rem;
+  border: 1px solid #35f1f9;
+  padding: 0.5rem;
+}
+.trait-col h4 {
+  position: sticky;
+  top: 0;
+  background: #1d2233;
+  margin-top: 0;
+  padding: 0.2rem;
+  z-index: 1;
+}
+
+/* Contacts layout */
+#contacts-container {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+}
+
+.contact-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  max-height: 50vh;
+  gap: 0.8rem;
+  border: 1px solid #35f1f9;
+  padding: 0.5rem;
+}
+.contact-col h4 {
+  position: sticky;
+  top: 0;
+  background: #1d2233;
+  margin-top: 0;
+  padding: 0.2rem;
+  z-index: 1;
+}
+
+.feature-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  max-height: 30vh;
+  overflow-y: auto;
+  border: 1px solid #35f1f9;
+  padding: 0.5rem;
 }
 /* Summary screen layout */
 .summary-container {
