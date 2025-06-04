@@ -142,24 +142,30 @@
     "Detached",
     "Completely callous"
   ],
-  "traits": [
-    { "name": "Stealthy", "category": "Combat" },
-    { "name": "Charismatic", "category": "Social" },
-    { "name": "Tactical thinker", "category": "Combat" },
-    { "name": "Loyal", "category": "Personality" },
-    { "name": "Paranoid", "category": "Personality" },
-    { "name": "Ruthless", "category": "Personality" },
-    { "name": "Honest", "category": "Personality" },
-    { "name": "Quick-tempered", "category": "Personality" },
-    { "name": "Wise", "category": "Personality" },
-    { "name": "Observant", "category": "Personality" },
-    { "name": "Resilient", "category": "Personality" },
-    { "name": "Soft-spoken", "category": "Social" },
-    { "name": "Bold", "category": "Personality" },
-    { "name": "Manipulative", "category": "Social" },
-    { "name": "Compassionate", "category": "Personality" },
-    { "name": "Calculating", "category": "Personality" }
-  ],
+  "traits": {
+    "positive": [
+      "Loyal",
+      "Honest",
+      "Wise",
+      "Observant",
+      "Resilient",
+      "Compassionate"
+    ],
+    "neutral": [
+      "Stealthy",
+      "Charismatic",
+      "Tactical thinker",
+      "Soft-spoken",
+      "Bold"
+    ],
+    "negative": [
+      "Paranoid",
+      "Ruthless",
+      "Quick-tempered",
+      "Manipulative",
+      "Calculating"
+    ]
+  },
   "contacts": [
     { "name": "Jax", "relationship": "Ex-handler", "note": "Knows too much", "category": "Negative" },
     { "name": "Mira", "relationship": "Black market medic", "note": "Still owes you a favor", "category": "Neutral" },
