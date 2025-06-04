@@ -1,1168 +1,1489 @@
-{
-  "$schemaVersion": "1.0",
-  "name": "Artist",
-  "attribute": "Charisma",
-  "description": "The art of performance, persuasion, and emotional manipulation through creative expression.",
-  "sublist_reference": "artforms",
-  "levels": [
-    {
-      "level": 1,
-      "effect_type": "active",
-      "effect_description": "Choose 2 artforms; gain advantage on all performance rolls with them.",
-      "system_hook": "on_skill_selection",
-      "roll_required": true,
-      "modifiers": {
-        "advantage_on": ["performance"],
-        "artform_limit": 2
+[
+  {
+    "$schemaVersion": "1.0",
+    "name": "Artist",
+    "attribute": "Charisma",
+    "description": "The art of performance, persuasion, and emotional manipulation through creative expression.",
+    "sublist_reference": "artforms",
+    "levels": [
+      {
+        "level": 1,
+        "effect_type": "active",
+        "effect_description": "Choose 2 artforms; gain advantage on all performance rolls with them.",
+        "system_hook": "on_skill_selection",
+        "roll_required": true,
+        "modifiers": {
+          "advantage_on": [
+            "performance"
+          ],
+          "artform_limit": 2
+        },
+        "selectable_options": "artforms"
       },
-      "selectable_options": "artforms"
-    },
-    {
-      "level": 2,
-      "effect_type": "active",
-      "effect_description": "Use art as a distraction; audience rolls Wisdom against your roll.",
-      "system_hook": "on_distraction_attempt",
-      "roll_required": true,
-      "modifiers": {
-        "contest": {
-          "actor": "Artist",
-          "target": "Audience",
-          "skill": "Wisdom"
+      {
+        "level": 2,
+        "effect_type": "active",
+        "effect_description": "Use art as a distraction; audience rolls Wisdom against your roll.",
+        "system_hook": "on_distraction_attempt",
+        "roll_required": true,
+        "modifiers": {
+          "contest": {
+            "actor": "Artist",
+            "target": "Audience",
+            "skill": "Wisdom"
+          }
+        }
+      },
+      {
+        "level": 3,
+        "effect_type": "active",
+        "effect_description": "Viewers must make a check or become fans.",
+        "system_hook": "on_performance",
+        "roll_required": true,
+        "modifiers": {
+          "fan_conversion": true
+        }
+      },
+      {
+        "level": 4,
+        "effect_type": "active",
+        "effect_description": "Manipulate feelings with advantage; contested Wisdom roll.",
+        "system_hook": "on_emotional_manipulation",
+        "roll_required": true,
+        "modifiers": {
+          "advantage_on": [
+            "manipulation"
+          ],
+          "contest": {
+            "skill": "Wisdom"
+          }
+        }
+      },
+      {
+        "level": 5,
+        "effect_type": "passive",
+        "effect_description": "Your work earns you favor with those who recognize it.",
+        "system_hook": "on_artwork_recognition",
+        "roll_required": false,
+        "modifiers": {
+          "favor_bonus": 2
         }
       }
-    },
-    {
-      "level": 3,
-      "effect_type": "active",
-      "effect_description": "Viewers must make a check or become fans.",
-      "system_hook": "on_performance",
-      "roll_required": true,
-      "modifiers": {
-        "fan_conversion": true
+    ]
+  },
+  {
+    "$schemaVersion": "1.0",
+    "name": "Athlete",
+    "attribute": "Constitution",
+    "description": "Peak physical prowess in climbing, jumping, sprinting, and inspiring allies in battle.",
+    "levels": [
+      {
+        "level": 1,
+        "effect_type": "passive",
+        "effect_description": "Climb speed equals movement speed.",
+        "system_hook": "on_climb_attempt",
+        "roll_required": false,
+        "modifiers": {
+          "climb_speed_bonus": "movement_speed"
+        }
+      },
+      {
+        "level": 2,
+        "effect_type": "passive",
+        "effect_description": "Double jump height.",
+        "system_hook": "on_jump_attempt",
+        "roll_required": false,
+        "modifiers": {
+          "jump_height_multiplier": 2
+        }
+      },
+      {
+        "level": 3,
+        "effect_type": "passive",
+        "effect_description": "Double sprint speed.",
+        "system_hook": "on_sprint",
+        "roll_required": false,
+        "modifiers": {
+          "sprint_speed_multiplier": 2
+        }
+      },
+      {
+        "level": 4,
+        "effect_type": "active",
+        "effect_description": "+1 to group initiative.",
+        "system_hook": "on_initiative",
+        "roll_required": false,
+        "modifiers": {
+          "initiative_bonus": 1,
+          "group": true
+        }
+      },
+      {
+        "level": 5,
+        "effect_type": "passive",
+        "effect_description": "+2 to armor rating.",
+        "system_hook": "on_defense_check",
+        "roll_required": false,
+        "modifiers": {
+          "armor_bonus": 2
+        }
       }
-    },
-    {
-      "level": 4,
-      "effect_type": "active",
-      "effect_description": "Manipulate feelings with advantage; contested Wisdom roll.",
-      "system_hook": "on_emotional_manipulation",
-      "roll_required": true,
-      "modifiers": {
-        "advantage_on": ["manipulation"],
-        "contest": { "skill": "Wisdom" }
+    ]
+  },
+  {
+    "$schemaVersion": "1.0",
+    "name": "Bureaucracy",
+    "attribute": "Charisma",
+    "description": "The manipulation and mastery of governmental systems and paperwork.",
+    "levels": [
+      {
+        "level": 1,
+        "effect_type": "active",
+        "effect_description": "Forge IDs contested by Wisdom checks.",
+        "system_hook": "on_forge_id",
+        "roll_required": true,
+        "modifiers": {
+          "can_forge_id": true,
+          "contest_skill": "Wisdom"
+        }
+      },
+      {
+        "level": 2,
+        "effect_type": "active",
+        "effect_description": "Serve as a legal representative.",
+        "system_hook": "on_legal_action",
+        "roll_required": false,
+        "modifiers": {
+          "can_represent": true
+        }
+      },
+      {
+        "level": 3,
+        "effect_type": "passive",
+        "effect_description": "Find invitations to most government functions.",
+        "system_hook": "on_event_access",
+        "roll_required": false,
+        "modifiers": {
+          "auto_invite": true
+        }
+      },
+      {
+        "level": 4,
+        "effect_type": "passive",
+        "effect_description": "Advantage when deceiving police or guards.",
+        "system_hook": "on_deceive_authority",
+        "roll_required": true,
+        "modifiers": {
+          "advantage_on": [
+            "deceive_police",
+            "deceive_guard"
+          ]
+        }
+      },
+      {
+        "level": 5,
+        "effect_type": "passive",
+        "effect_description": "Have a government contact in any civilized area.",
+        "system_hook": "on_arrival_civilized_area",
+        "roll_required": false,
+        "modifiers": {
+          "has_contact": "government"
+        }
       }
-    },
-    {
-      "level": 5,
-      "effect_type": "passive",
-      "effect_description": "Your work earns you favor with those who recognize it.",
-      "system_hook": "on_artwork_recognition",
-      "roll_required": false,
-      "modifiers": { "favor_bonus": 2 }
-    }
-  ]
-}
-{
-  "$schemaVersion": "1.0",
-  "name": "Athlete",
-  "attribute": "Constitution",
-  "description": "Peak physical prowess in climbing, jumping, sprinting, and inspiring allies in battle.",
-  "levels": [
-    {
-      "level": 1,
-      "effect_type": "passive",
-      "effect_description": "Climb speed equals movement speed.",
-      "system_hook": "on_climb_attempt",
-      "roll_required": false,
-      "modifiers": { "climb_speed_bonus": "movement_speed" }
-    },
-    {
-      "level": 2,
-      "effect_type": "passive",
-      "effect_description": "Double jump height.",
-      "system_hook": "on_jump_attempt",
-      "roll_required": false,
-      "modifiers": { "jump_height_multiplier": 2 }
-    },
-    {
-      "level": 3,
-      "effect_type": "passive",
-      "effect_description": "Double sprint speed.",
-      "system_hook": "on_sprint",
-      "roll_required": false,
-      "modifiers": { "sprint_speed_multiplier": 2 }
-    },
-    {
-      "level": 4,
-      "effect_type": "active",
-      "effect_description": "+1 to group initiative.",
-      "system_hook": "on_initiative",
-      "roll_required": false,
-      "modifiers": { "initiative_bonus": 1, "group": true }
-    },
-    {
-      "level": 5,
-      "effect_type": "passive",
-      "effect_description": "+2 to armor rating.",
-      "system_hook": "on_defense_check",
-      "roll_required": false,
-      "modifiers": { "armor_bonus": 2 }
-    }
-  ]
-}
-{
-  "$schemaVersion": "1.0",
-  "name": "Bureaucracy",
-  "attribute": "Charisma",
-  "description": "The manipulation and mastery of governmental systems and paperwork.",
-  "levels": [
-    {
-      "level": 1,
-      "effect_type": "active",
-      "effect_description": "Forge IDs contested by Wisdom checks.",
-      "system_hook": "on_forge_id",
-      "roll_required": true,
-      "modifiers": { "can_forge_id": true, "contest_skill": "Wisdom" }
-    },
-    {
-      "level": 2,
-      "effect_type": "active",
-      "effect_description": "Serve as a legal representative.",
-      "system_hook": "on_legal_action",
-      "roll_required": false,
-      "modifiers": { "can_represent": true }
-    },
-    {
-      "level": 3,
-      "effect_type": "passive",
-      "effect_description": "Find invitations to most government functions.",
-      "system_hook": "on_event_access",
-      "roll_required": false,
-      "modifiers": { "auto_invite": true }
-    },
-    {
-      "level": 4,
-      "effect_type": "passive",
-      "effect_description": "Advantage when deceiving police or guards.",
-      "system_hook": "on_deceive_authority",
-      "roll_required": true,
-      "modifiers": { "advantage_on": ["deceive_police", "deceive_guard"] }
-    },
-    {
-      "level": 5,
-      "effect_type": "passive",
-      "effect_description": "Have a government contact in any civilized area.",
-      "system_hook": "on_arrival_civilized_area",
-      "roll_required": false,
-      "modifiers": { "has_contact": "government" }
-    }
-  ]
-}
-{
-  "$schemaVersion": "1.0",
-  "name": "Business",
-  "attribute": "Charisma",
-  "description": "Knowledge and application of trade, finance, and negotiation.",
-  "levels": [
-    {
-      "level": 1,
-      "effect_type": "passive",
-      "effect_description": "Earn 10% more on trades.",
-      "system_hook": "on_trade",
-      "roll_required": false,
-      "modifiers": { "trade_profit_bonus_pct": 10 }
-    },
-    {
-      "level": 2,
-      "effect_type": "passive",
-      "effect_description": "Have black market contacts.",
-      "system_hook": "on_black_market",
-      "roll_required": false,
-      "modifiers": { "has_contact": "black_market" }
-    },
-    {
-      "level": 3,
-      "effect_type": "passive",
-      "effect_description": "Estimate item value instantly.",
-      "system_hook": "on_appraise",
-      "roll_required": false,
-      "modifiers": { "auto_appraise": true }
-    },
-    {
-      "level": 4,
-      "effect_type": "active",
-      "effect_description": "Draft service-for-goods contracts; contestable by skill roll.",
-      "system_hook": "on_contract_creation",
-      "roll_required": true,
-      "modifiers": { "can_contract": true }
-    },
-    {
-      "level": 5,
-      "effect_type": "passive",
-      "effect_description": "Establish business for 10% sessional profit.",
-      "system_hook": "on_establish_business",
-      "roll_required": false,
-      "modifiers": { "business_profit_pct": 10 }
-    }
-  ]
-}
-{
-  "$schemaVersion": "1.0",
-  "name": "Called Shot",
-  "attribute": "Dexterity",
-  "description": "Targeted ranged attacks aimed at weakening or disabling enemies.",
-  "levels": [
-    {
-      "level": 1,
-      "effect_type": "passive",
-      "effect_description": "Add Dexterity to ranged weapon damage.",
-      "system_hook": "on_ranged_attack",
-      "roll_required": false,
-      "modifiers": { "damage_bonus_attr": "Dexterity" }
-    },
-    {
-      "level": 2,
-      "effect_type": "passive",
-      "effect_description": "Gain 1/2 cover when using ranged weapons.",
-      "system_hook": "on_cover_calc",
-      "roll_required": false,
-      "modifiers": { "cover_bonus": 0.5 }
-    },
-    {
-      "level": 3,
-      "effect_type": "passive",
-      "effect_description": "May legally obtain heavy weapons.",
-      "system_hook": "on_weapon_purchase",
-      "roll_required": false,
-      "modifiers": { "legal_heavy_weapons": true }
-    },
-    {
-      "level": 4,
-      "effect_type": "active",
-      "effect_description": "Cover fire gives enemies disadvantage on attacks.",
-      "system_hook": "on_cover_fire",
-      "roll_required": true,
-      "modifiers": { "enemy_disadvantage_on_attack": true }
-    },
-    {
-      "level": 5,
-      "effect_type": "passive",
-      "effect_description": "Ignore cover when attacking.",
-      "system_hook": "on_attack_with_cover",
-      "roll_required": false,
-      "modifiers": { "ignore_cover": true }
-    }
-  ]
-}
-{
-  "$schemaVersion": "1.0",
-  "name": "Called Strike",
-  "attribute": "Constitution",
-  "description": "Precision melee strikes to control or disable opponents.",
-  "levels": [
-    {
-      "level": 1,
-      "effect_type": "passive",
-      "effect_description": "Add Constitution to melee/unarmed damage.",
-      "system_hook": "on_melee_attack",
-      "roll_required": false,
-      "modifiers": { "damage_bonus_attr": "Constitution" }
-    },
-    {
-      "level": 2,
-      "effect_type": "passive",
-      "effect_description": "Opponent has disadvantage against you after you hit them.",
-      "system_hook": "on_opponent_attack_post_hit",
-      "roll_required": false,
-      "modifiers": { "opponent_disadvantage_after_hit": true }
-    },
-    {
-      "level": 3,
-      "effect_type": "passive",
-      "effect_description": "+2 damage with improvised weapons.",
-      "system_hook": "on_improvised_weapon_attack",
-      "roll_required": false,
-      "modifiers": { "improvised_weapon_damage_bonus": 2 }
-    },
-    {
-      "level": 4,
-      "effect_type": "passive",
-      "effect_description": "Thrown improvised weapons have 30ft range and +2 damage.",
-      "system_hook": "on_thrown_improvised_weapon",
-      "roll_required": false,
-      "modifiers": { "throw_range": 30, "thrown_damage_bonus": 2 }
-    },
-    {
-      "level": 5,
-      "effect_type": "active",
-      "effect_description": "Make 2 melee/unarmed attacks per action if one is a Called Strike.",
-      "system_hook": "on_attack_action",
-      "roll_required": false,
-      "modifiers": { "extra_attack_if_called_strike": true }
-    }
-  ]
-}
-{
-  "$schemaVersion": "1.0",
-  "name": "Gambling",
-  "attribute": "Charisma",
-  "description": "Luck manipulation, bluffing, and risk-reward mastery.",
-  "levels": [
-    {
-      "level": 1,
-      "effect_type": "passive",
-      "effect_description": "Advantage on bluffing.",
-      "system_hook": "on_bluff_check",
-      "roll_required": true,
-      "modifiers": { "advantage_on": ["bluff"] }
-    },
-    {
-      "level": 2,
-      "effect_type": "passive",
-      "effect_description": "Know when a game is rigged.",
-      "system_hook": "on_gambling_session",
-      "roll_required": false,
-      "modifiers": { "auto_detect": ["rigged_game"] }
-    },
-    {
-      "level": 3,
-      "effect_type": "active",
-      "effect_description": "Flip a coin on a failed attack roll to potentially crit.",
-      "system_hook": "on_attack_roll_fail",
-      "roll_required": true,
-      "modifiers": { "can_coin_flip_for_crit": true }
-    },
-    {
-      "level": 4,
-      "effect_type": "passive",
-      "effect_description": "Advantage on reading intentions.",
-      "system_hook": "on_read_intent",
-      "roll_required": true,
-      "modifiers": { "advantage_on": ["read_intentions"] }
-    },
-    {
-      "level": 5,
-      "effect_type": "active",
-      "effect_description": "Sense danger level of a situation once per day.",
-      "system_hook": "on_enter_situation",
-      "roll_required": false,
-      "modifiers": { "sense_danger_daily": true }
-    }
-  ]
-}
-{
-  "$schemaVersion": "1.0",
-  "name": "Gunning",
-  "attribute": "Dexterity",
-  "description": "Combat training with ranged weapons, especially in high-pressure scenarios.",
-  "levels": [
-    {
-      "level": 1,
-      "effect_type": "passive",
-      "effect_description": "Enemies have disadvantage when shooting at you while sprinting.",
-      "system_hook": "on_enemy_shoot_while_sprinting",
-      "roll_required": false,
-      "modifiers": { "enemy_disadvantage_when_sprinting": true }
-    },
-    {
-      "level": 2,
-      "effect_type": "passive",
-      "effect_description": "Advantage in close-range firefights.",
-      "system_hook": "on_close_range_firefight",
-      "roll_required": true,
-      "modifiers": { "advantage_on": ["close_range_firefight"] }
-    },
-    {
-      "level": 3,
-      "effect_type": "active",
-      "effect_description": "Make 2 attacks per action; -5 penalty on 2nd if heavy weapon.",
-      "system_hook": "on_attack_action",
-      "roll_required": true,
-      "modifiers": { "extra_attack": true, "second_attack_penalty_heavy": -5 }
-    },
-    {
-      "level": 4,
-      "effect_type": "passive",
-      "effect_description": "Advantage on initiative rolls.",
-      "system_hook": "on_initiative",
-      "roll_required": true,
-      "modifiers": { "advantage_on": ["initiative"] }
-    },
-    {
-      "level": 5,
-      "effect_type": "active",
-      "effect_description": "Can stun a target using 2 ranged shots.",
-      "system_hook": "on_double_ranged_attack",
-      "roll_required": true,
-      "modifiers": { "can_stun_with_double_shot": true }
-    }
-  ]
-}
-{
-  "$schemaVersion": "1.0",
-  "name": "Hijack",
-  "attribute": "Intelligence",
-  "description": "The art of breaking, entering, and stealing vehicles or valuable tech.",
-  "levels": [
-    {
-      "level": 1,
-      "effect_type": "active",
-      "effect_description": "Open basic locks and pick pockets.",
-      "system_hook": "on_lockpicking_or_pickpocket",
-      "roll_required": true,
-      "modifiers": { "can_open_basic_locks": true, "can_pickpocket": true }
-    },
-    {
-      "level": 2,
-      "effect_type": "active",
-      "effect_description": "Steal vehicles and disable alarms with advantage.",
-      "system_hook": "on_vehicle_theft_or_alarm",
-      "roll_required": true,
-      "modifiers": { "advantage_on": ["vehicle_theft", "disable_alarm"] }
-    },
-    {
-      "level": 3,
-      "effect_type": "passive",
-      "effect_description": "Spot high-value items instantly.",
-      "system_hook": "on_search_for_loot",
-      "roll_required": false,
-      "modifiers": { "auto_detect_high_value_items": true }
-    },
-    {
-      "level": 4,
-      "effect_type": "active",
-      "effect_description": "Plan a heist with advantage on infiltration rolls.",
-      "system_hook": "on_heist_planning",
-      "roll_required": true,
-      "modifiers": { "advantage_on": ["infiltration"] }
-    },
-    {
-      "level": 5,
-      "effect_type": "active",
-      "effect_description": "Execute heists with reroll on any 1 failed check.",
-      "system_hook": "on_heist_execution",
-      "roll_required": true,
-      "modifiers": { "reroll_one_failure_per_heist": true }
-    }
-  ]
-}
-{
-  "$schemaVersion": "1.0",
-  "name": "History",
-  "attribute": "Intelligence",
-  "description": "Deep knowledge of past events, factions, and lost technologies.",
-  "levels": [
-    {
-      "level": 1,
-      "effect_type": "passive",
-      "effect_description": "You never forget past events.",
-      "system_hook": "on_memory_check",
-      "roll_required": false,
-      "modifiers": { "perfect_memory": true }
-    },
-    {
-      "level": 2,
-      "effect_type": "passive",
-      "effect_description": "Know current wars and political factions.",
-      "system_hook": "on_faction_query",
-      "roll_required": false,
-      "modifiers": { "faction_knowledge": true }
-    },
-    {
-      "level": 3,
-      "effect_type": "active",
-      "effect_description": "Recreate historical items.",
-      "system_hook": "on_recreate_item",
-      "roll_required": true,
-      "modifiers": { "can_recreate_historical_items": true }
-    },
-    {
-      "level": 4,
-      "effect_type": "passive",
-      "effect_description": "Know the location of lost tech.",
-      "system_hook": "on_lost_tech_query",
-      "roll_required": false,
-      "modifiers": { "lost_tech_knowledge": true }
-    },
-    {
-      "level": 5,
-      "effect_type": "active",
-      "effect_description": "Predict future trends based on history.",
-      "system_hook": "on_trend_prediction",
-      "roll_required": true,
-      "modifiers": { "trend_prediction": true }
-    }
-  ]
-}
-{
-  "$schemaVersion": "1.0",
-  "name": "Mechanics",
-  "attribute": "Wisdom",
-  "description": "Repair and creation of machines and automated systems.",
-  "levels": [
-    {
-      "level": 1,
-      "effect_type": "active",
-      "effect_description": "Repair from blueprint without rolling.",
-      "system_hook": "on_repair_with_blueprint",
-      "roll_required": false,
-      "modifiers": { "auto_repair_if_blueprint": true }
-    },
-    {
-      "level": 2,
-      "effect_type": "active",
-      "effect_description": "Install common upgrades with no roll.",
-      "system_hook": "on_upgrade_install",
-      "roll_required": false,
-      "modifiers": { "auto_install_common_upgrade": true }
-    },
-    {
-      "level": 3,
-      "effect_type": "passive",
-      "effect_description": "Replicate known machines faster.",
-      "system_hook": "on_replicate_machine",
-      "roll_required": false,
-      "modifiers": { "replicate_speed_multiplier": 2 }
-    },
-    {
-      "level": 4,
-      "effect_type": "active",
-      "effect_description": "Craft unique upgrades with advantage.",
-      "system_hook": "on_craft_unique_upgrade",
-      "roll_required": true,
-      "modifiers": { "advantage_on": ["craft_unique_upgrade"] }
-    },
-    {
-      "level": 5,
-      "effect_type": "active",
-      "effect_description": "Create entirely new machines with advantage.",
-      "system_hook": "on_create_new_machine",
-      "roll_required": true,
-      "modifiers": { "advantage_on": ["create_new_machine"] }
-    }
-  ]
-}
-{
-  "$schemaVersion": "1.0",
-  "name": "Medical",
-  "attribute": "Wisdom",
-  "description": "Diagnosis and treatment of injuries, conditions, and infections.",
-  "levels": [
-    {
-      "level": 1,
-      "effect_type": "active",
-      "effect_description": "Heal 1d4 + Wisdom with a kit.",
-      "system_hook": "on_heal_with_kit",
-      "roll_required": true,
-      "modifiers": { "heal_amount": "1d4+Wisdom", "requires_kit": true }
-    },
-    {
-      "level": 2,
-      "effect_type": "active",
-      "effect_description": "Stop Bleeding status.",
-      "system_hook": "on_bleed_stop_attempt",
-      "roll_required": true,
-      "modifiers": { "can_stop_bleeding": true }
-    },
-    {
-      "level": 3,
-      "effect_type": "active",
-      "effect_description": "Heal 1d12 + Wisdom.",
-      "system_hook": "on_heal_major",
-      "roll_required": true,
-      "modifiers": { "heal_amount": "1d12+Wisdom" }
-    },
-    {
-      "level": 4,
-      "effect_type": "active",
-      "effect_description": "Remove Injured status.",
-      "system_hook": "on_injury_removal_attempt",
-      "roll_required": true,
-      "modifiers": { "can_remove_injured": true }
-    },
-    {
-      "level": 5,
-      "effect_type": "active",
-      "effect_description": "Reproduce medicines at half cost.",
-      "system_hook": "on_reproduce_medicine",
-      "roll_required": false,
-      "modifiers": { "medicine_cost_multiplier": 0.5 }
-    }
-  ]
-}
-{
-  "$schemaVersion": "1.0",
-  "name": "Melee",
-  "attribute": "Constitution or Dexterity",
-  "description": "Expertise in close-quarters combat with melee weapons, allowing for defense, aggression, and precision strikes.",
-  "levels": [
-    {
-      "level": 1,
-      "effect_type": "passive",
-      "effect_description": "You have 1/2 cover when wielding a melee weapon within 10ft of an enemy.",
-      "system_hook": "on_cover_with_melee",
-      "roll_required": false,
-      "modifiers": { "cover_bonus_melee": 0.5 }
-    },
-    {
-      "level": 2,
-      "effect_type": "active",
-      "effect_description": "Deflect incoming shots, gaining +3 Armor Rating; costs one reaction while holding a melee weapon.",
-      "system_hook": "on_deflect_shot_with_melee",
-      "roll_required": true,
-      "modifiers": { "armor_bonus_on_deflect": 3, "uses_reaction": true }
-    },
-    {
-      "level": 3,
-      "effect_type": "passive",
-      "effect_description": "Your melee weapon damage is increased by +3.",
-      "system_hook": "on_melee_attack",
-      "roll_required": false,
-      "modifiers": { "melee_damage_bonus": 3 }
-    },
-    {
-      "level": 4,
-      "effect_type": "active",
-      "effect_description": "Using an action, you can accurately read a target’s Hitpoints.",
-      "system_hook": "on_read_target_hp",
-      "roll_required": true,
-      "modifiers": { "can_read_target_hp": true }
-    },
-    {
-      "level": 5,
-      "effect_type": "active",
-      "effect_description": "Attempt to finish a target below 25% HP with an opposed roll.",
-      "system_hook": "on_finishing_move",
-      "roll_required": true,
-      "modifiers": { "finisher_opposed_roll": true }
-    }
-  ]
-}
-{
-  "$schemaVersion": "1.0",
-  "name": "Nutrition",
-  "attribute": "Constitution",
-  "description": "Mastery over food, health, and dietary effects, letting you enhance meals and grant special bonuses.",
-  "levels": [
-    {
-      "level": 1,
-      "effect_type": "active",
-      "effect_description": "Those who eat your food gain +5 movement and immunity to ingested toxins for 12 hours.",
-      "system_hook": "on_cook_food",
-      "roll_required": false,
-      "modifiers": { "movement_bonus": 5, "toxin_immunity_hours": 12 }
-    },
-    {
-      "level": 2,
-      "effect_type": "active",
-      "effect_description": "You can cook exotic beasts, granting unique effects based on the animal.",
-      "system_hook": "on_cook_exotic_beast",
-      "roll_required": true,
-      "modifiers": { "unique_effect_per_beast": true }
-    },
-    {
-      "level": 3,
-      "effect_type": "passive",
-      "effect_description": "Sniff out rare ingredients that may give enhancements when cooked.",
-      "system_hook": "on_ingredient_search",
-      "roll_required": false,
-      "modifiers": { "can_find_rare_ingredients": true }
-    },
-    {
-      "level": 4,
-      "effect_type": "active",
-      "effect_description": "Create a signature side dish that grants inspiration once per use.",
-      "system_hook": "on_signature_dish",
-      "roll_required": false,
-      "modifiers": { "grants_inspiration_once": true }
-    },
-    {
-      "level": 5,
-      "effect_type": "active",
-      "effect_description": "Your signature dish grants a special ability to those who eat it.",
-      "system_hook": "on_signature_dish_special",
-      "roll_required": false,
-      "modifiers": { "signature_dish_special_ability": true }
-    }
-  ]
-}
-{
-  "$schemaVersion": "1.0",
-  "name": "Navigation",
-  "attribute": "Intelligence",
-  "description": "The science of finding your way in unknown terrain, and making efficient, sometimes impossible, journeys.",
-  "levels": [
-    {
-      "level": 1,
-      "effect_type": "active",
-      "effect_description": "Movement bonus +5.",
-      "system_hook": "on_navigation_check",
-      "roll_required": false,
-      "modifiers": { "movement_bonus": 5 }
-    },
-    {
-      "level": 2,
-      "effect_type": "active",
-      "effect_description": "Always find a shortcut; halve the travel time.",
-      "system_hook": "on_find_shortcut",
-      "roll_required": true,
-      "modifiers": { "shortcut_found": true, "travel_time_multiplier": 0.5 }
-    },
-    {
-      "level": 3,
-      "effect_type": "active",
-      "effect_description": "Jump directly to planets or always find civilization if not in Space Age.",
-      "system_hook": "on_jump_travel",
-      "roll_required": true,
-      "modifiers": { "can_jump_to_planet": true, "find_civilization": true }
-    },
-    {
-      "level": 4,
-      "effect_type": "active",
-      "effect_description": "Plot perfect course through dangerous terrain, adding Navigation roll to vehicle operator.",
-      "system_hook": "on_plot_course",
-      "roll_required": true,
-      "modifiers": { "navigation_bonus_to_operator": true }
-    },
-    {
-      "level": 5,
-      "effect_type": "passive",
-      "effect_description": "Navigate any foreign terrain without a map.",
-      "system_hook": "on_navigation_without_map",
-      "roll_required": false,
-      "modifiers": { "no_map_required": true }
-    }
-  ]
-}
-{
-  "$schemaVersion": "1.0",
-  "name": "Operator",
-  "attribute": "Dexterity",
-  "description": "Mastery of piloting and maintaining vehicles or ships, making you an ace behind the wheel or controls.",
-  "levels": [
-    {
-      "level": 1,
-      "effect_type": "passive",
-      "effect_description": "Operate vehicles without a skill check.",
-      "system_hook": "on_basic_vehicle_operation",
-      "roll_required": false,
-      "modifiers": { "no_roll_for_basic_vehicle": true }
-    },
-    {
-      "level": 2,
-      "effect_type": "active",
-      "effect_description": "Advantage on stealth with vehicles or ships.",
-      "system_hook": "on_vehicle_stealth",
-      "roll_required": true,
-      "modifiers": { "advantage_on": ["vehicle_stealth"] }
-    },
-    {
-      "level": 3,
-      "effect_type": "passive",
-      "effect_description": "Spot wear and tear and use solid checklists for vehicle maintenance.",
-      "system_hook": "on_vehicle_maintenance",
-      "roll_required": false,
-      "modifiers": { "auto_spot_maintenance_issues": true }
-    },
-    {
-      "level": 4,
-      "effect_type": "active",
-      "effect_description": "Advantage on challenging vehicle maneuvers.",
-      "system_hook": "on_vehicle_maneuver",
-      "roll_required": true,
-      "modifiers": { "advantage_on": ["vehicle_maneuver"] }
-    },
-    {
-      "level": 5,
-      "effect_type": "active",
-      "effect_description": "Repair your vehicle without a mechanic check (need parts/equipment).",
-      "system_hook": "on_vehicle_self_repair",
-      "roll_required": false,
-      "modifiers": { "no_roll_for_vehicle_repair": true, "requires_parts": true }
-    }
-  ]
-}
-{
-  "$schemaVersion": "1.0",
-  "name": "Perception",
-  "attribute": "Wisdom",
-  "description": "Heightened awareness and observation, letting you spot details, read people, and sense threats.",
-  "levels": [
-    {
-      "level": 1,
-      "effect_type": "active",
-      "effect_description": "Once per day, gain advantage on your next Perception roll.",
-      "system_hook": "on_perception_check",
-      "roll_required": true,
-      "modifiers": { "daily_advantage_perception": true }
-    },
-    {
-      "level": 2,
-      "effect_type": "passive",
-      "effect_description": "Double the distance for sounds and sights; advantage with optics or hearing.",
-      "system_hook": "on_perception_test",
-      "roll_required": false,
-      "modifiers": { "perception_range_multiplier": 2, "advantage_with_aids": true }
-    },
-    {
-      "level": 3,
-      "effect_type": "passive",
-      "effect_description": "+2 to rolls when inspecting objects or locations.",
-      "system_hook": "on_inspect",
-      "roll_required": false,
-      "modifiers": { "inspect_bonus": 2 }
-    },
-    {
-      "level": 4,
-      "effect_type": "active",
-      "effect_description": "Advantage on reading people’s intent.",
-      "system_hook": "on_read_intent",
-      "roll_required": true,
-      "modifiers": { "advantage_on": ["read_intentions"] }
-    },
-    {
-      "level": 5,
-      "effect_type": "passive",
-      "effect_description": "Add Intelligence + Wisdom bonus to Perception checks.",
-      "system_hook": "on_perception_check",
-      "roll_required": false,
-      "modifiers": { "bonus_perception_mod": ["Intelligence", "Wisdom"] }
-    }
-  ]
-}
-{
-  "$schemaVersion": "1.0",
-  "name": "Religion",
-  "attribute": "Intelligence",
-  "description": "Understanding of religious lore, spiritual influence, and communion with the divine.",
-  "levels": [
-    {
-      "level": 1,
-      "effect_type": "passive",
-      "effect_description": "Know the basics of two religions.",
-      "system_hook": "on_religion_knowledge_check",
-      "roll_required": false,
-      "modifiers": { "religions_known": 2 }
-    },
-    {
-      "level": 2,
-      "effect_type": "active",
-      "effect_description": "Advantage persuading people to forgive using spirituality.",
-      "system_hook": "on_persuade_forgiveness",
-      "roll_required": true,
-      "modifiers": { "advantage_on": ["spiritual_persuasion"] }
-    },
-    {
-      "level": 3,
-      "effect_type": "active",
-      "effect_description": "Meditate for 6 hours to clear toxins or sickness.",
-      "system_hook": "on_meditate_detox",
-      "roll_required": false,
-      "modifiers": { "detox_meditation_hours": 6 }
-    },
-    {
-      "level": 4,
-      "effect_type": "passive",
-      "effect_description": "Know of lost religious artifacts; get a clue once per month.",
-      "system_hook": "on_artifact_query",
-      "roll_required": false,
-      "modifiers": { "artifact_clue_monthly": true }
-    },
-    {
-      "level": 5,
-      "effect_type": "active",
-      "effect_description": "Communicate with a deity monthly for unique challenges and rewards.",
-      "system_hook": "on_deity_communion",
-      "roll_required": false,
-      "modifiers": { "deity_communication_monthly": true }
-    }
-  ]
-}
-{
-  "$schemaVersion": "1.0",
-  "name": "Science",
-  "attribute": "Intelligence",
-  "description": "Comprehension of scientific fields and their practical, technological, or medical applications.",
-  "levels": [
-    {
-      "level": 1,
-      "effect_type": "active",
-      "effect_description": "Gain +2 when studying or inspecting new science topics.",
-      "system_hook": "on_study_science",
-      "roll_required": true,
-      "modifiers": { "science_study_bonus": 2 }
-    },
-    {
-      "level": 2,
-      "effect_type": "active",
-      "effect_description": "Advantage identifying new technology.",
-      "system_hook": "on_identify_technology",
-      "roll_required": true,
-      "modifiers": { "advantage_on": ["identify_technology"] }
-    },
-    {
-      "level": 3,
-      "effect_type": "active",
-      "effect_description": "Sabotage technology you understand.",
-      "system_hook": "on_sabotage_technology",
-      "roll_required": true,
-      "modifiers": { "can_sabotage_technology": true }
-    },
-    {
-      "level": 4,
-      "effect_type": "passive",
-      "effect_description": "Add a scientific academy to your training and gain its bonuses.",
-      "system_hook": "on_gain_academy_bonus",
-      "roll_required": false,
-      "modifiers": { "has_scientific_academy_bonus": true }
-    },
-    {
-      "level": 5,
-      "effect_type": "passive",
-      "effect_description": "Apply your Science level to any roll in Technology, Medical, Mechanics, or Nutrition.",
-      "system_hook": "on_cross_skill_roll",
-      "roll_required": false,
-      "modifiers": { "apply_science_level_to": ["Technology", "Medical", "Mechanics", "Nutrition"] }
-    }
-  ]
-}
-{
-  "$schemaVersion": "1.0",
-  "name": "Speech",
-  "attribute": "Charisma",
-  "description": "Persuasive, clear, and compelling use of language in any social situation.",
-  "levels": [
-    {
-      "level": 1,
-      "effect_type": "active",
-      "effect_description": "+2 to Speech rolls when persuading someone.",
-      "system_hook": "on_persuade_attempt",
-      "roll_required": true,
-      "modifiers": { "persuasion_bonus": 2 }
-    },
-    {
-      "level": 2,
-      "effect_type": "active",
-      "effect_description": "Advantage when bribing with Speech.",
-      "system_hook": "on_bribe_attempt",
-      "roll_required": true,
-      "modifiers": { "advantage_on": ["bribe"] }
-    },
-    {
-      "level": 3,
-      "effect_type": "active",
-      "effect_description": "Communicate with people who don’t speak your language without disadvantage.",
-      "system_hook": "on_communicate_foreign_language",
-      "roll_required": true,
-      "modifiers": { "no_disadvantage_on_foreign_language": true }
-    },
-    {
-      "level": 4,
-      "effect_type": "active",
-      "effect_description": "After a 1-minute conversation, you can assess Intelligence, Wisdom, and Charisma.",
-      "system_hook": "on_assess_attributes",
-      "roll_required": false,
-      "modifiers": { "can_assess_attributes": ["Intelligence", "Wisdom", "Charisma"] }
-    },
-    {
-      "level": 5,
-      "effect_type": "active",
-      "effect_description": "Give a pre-battle speech to grant 6 allies +1 Armor, +2 to hit, or +3 damage for 8 hours (once per long rest).",
-      "system_hook": "on_pre_battle_speech",
-      "roll_required": false,
-      "modifiers": { "buff_allies": 6, "buff_options": ["+1 Armor", "+2 to hit", "+3 damage"], "buff_duration": "8h", "use_limit": "1 per long rest" }
-    }
-  ]
-}
-{
-  "$schemaVersion": "1.0",
-  "name": "Stealth",
-  "attribute": "Dexterity",
-  "description": "Remaining unseen, blending into crowds, or vanishing from pursuit.",
-  "levels": [
-    {
-      "level": 1,
-      "effect_type": "active",
-      "effect_description": "Advantage to Stealth rolls when alone.",
-      "system_hook": "on_stealth_attempt",
-      "roll_required": true,
-      "modifiers": { "advantage_on": ["stealth_when_alone"] }
-    },
-    {
-      "level": 2,
-      "effect_type": "passive",
-      "effect_description": "Hidden in crowds by default.",
-      "system_hook": "on_crowd_blend",
-      "roll_required": false,
-      "modifiers": { "hidden_in_crowds": true }
-    },
-    {
-      "level": 3,
-      "effect_type": "active",
-      "effect_description": "+4 to detect or pickpocket others.",
-      "system_hook": "on_detect_or_pickpocket",
-      "roll_required": true,
-      "modifiers": { "detect_pickpocket_bonus": 4 }
-    },
-    {
-      "level": 4,
-      "effect_type": "active",
-      "effect_description": "Distraction grants party advantage on Stealth rolls.",
-      "system_hook": "on_distraction_for_party",
-      "roll_required": true,
-      "modifiers": { "party_stealth_advantage_with_distraction": true }
-    },
-    {
-      "level": 5,
-      "effect_type": "active",
-      "effect_description": "In combat with 3+ enemies, use a reaction to give 2 attackers disadvantage against you.",
-      "system_hook": "on_multiple_enemy_combat",
-      "roll_required": false,
-      "modifiers": { "disadvantage_for_attackers": 2, "uses_reaction": true, "min_enemies": 3 }
-    }
-  ]
-}
-{
-  "$schemaVersion": "1.0",
-  "name": "Street",
-  "attribute": "Wisdom",
-  "description": "Criminal savvy, underworld contacts, and survival instincts in urban environments.",
-  "levels": [
-    {
-      "level": 1,
-      "effect_type": "passive",
-      "effect_description": "Spot criminals and their gang affiliations.",
-      "system_hook": "on_urban_scan",
-      "roll_required": false,
-      "modifiers": { "can_spot_gang_affiliation": true }
-    },
-    {
-      "level": 2,
-      "effect_type": "passive",
-      "effect_description": "Know when you’re being tailed; advantage tracking trackers.",
-      "system_hook": "on_tail_check",
-      "roll_required": false,
-      "modifiers": { "advantage_on_tracking_trackers": true, "auto_know_when_tailed": true }
-    },
-    {
-      "level": 3,
-      "effect_type": "passive",
-      "effect_description": "Always have an underground contact.",
-      "system_hook": "on_need_contact",
-      "roll_required": false,
-      "modifiers": { "has_underground_contact": true }
-    },
-    {
-      "level": 4,
-      "effect_type": "passive",
-      "effect_description": "Can’t be surprised in cities.",
-      "system_hook": "on_urban_encounter",
-      "roll_required": false,
-      "modifiers": { "urban_surprise_immunity": true }
-    },
-    {
-      "level": 5,
-      "effect_type": "active",
-      "effect_description": "Advantage on attack rolls while in a city.",
-      "system_hook": "on_attack_in_city",
-      "roll_required": true,
-      "modifiers": { "advantage_on": ["attack_in_city"] }
-    }
-  ]
-}
-{
-  "$schemaVersion": "1.0",
-  "name": "Technology",
-  "attribute": "Intelligence",
-  "description": "Technical aptitude for programming, digital devices, and mechanical systems.",
-  "levels": [
-    {
-      "level": 1,
-      "effect_type": "active",
-      "effect_description": "Add +2 to any roll involving coding or learning tech.",
-      "system_hook": "on_technology_roll",
-      "roll_required": true,
-      "modifiers": { "technology_roll_bonus": 2 }
-    },
-    {
-      "level": 2,
-      "effect_type": "active",
-      "effect_description": "Disable equipment with tools if you understand it.",
-      "system_hook": "on_disable_equipment",
-      "roll_required": true,
-      "modifiers": { "can_disable_equipment_with_tools": true }
-    },
-    {
-      "level": 3,
-      "effect_type": "active",
-      "effect_description": "Upgrade devices to Splicers/Data Pads (Space Age) or tweak tech for other uses.",
-      "system_hook": "on_upgrade_device",
-      "roll_required": true,
-      "modifiers": { "can_upgrade_device": true }
-    },
-    {
-      "level": 4,
-      "effect_type": "active",
-      "effect_description": "Create blueprints for any tech you have access to.",
-      "system_hook": "on_create_blueprint",
-      "roll_required": false,
-      "modifiers": { "can_create_blueprint": true }
-    },
-    {
-      "level": 5,
-      "effect_type": "active",
-      "effect_description": "Advantage shutting down/dismantling systems on vehicles or crafts.",
-      "system_hook": "on_shutdown_vehicle_system",
-      "roll_required": true,
-      "modifiers": { "advantage_on": ["shutdown_vehicle", "dismantle_vehicle"] }
-    }
-  ]
-}
-{
-  "$schemaVersion": "1.0",
-  "name": "Unarmed",
-  "attribute": "Constitution or Dexterity",
-  "description": "Hand-to-hand fighting prowess, grappling, submissions, and battlefield survival.",
-  "levels": [
-    {
-      "level": 1,
-      "effect_type": "passive",
-      "effect_description": "Advantage on physical contests; unarmed damage 1d4+Constitution.",
-      "system_hook": "on_physical_contest",
-      "roll_required": true,
-      "modifiers": { "advantage_on": ["physical_contest"], "unarmed_damage": "1d4+Constitution" }
-    },
-    {
-      "level": 2,
-      "effect_type": "passive",
-      "effect_description": "Unarmed strikes deal 1d6+Constitution.",
-      "system_hook": "on_unarmed_strike",
-      "roll_required": false,
-      "modifiers": { "unarmed_damage": "1d6+Constitution" }
-    },
-    {
-      "level": 3,
-      "effect_type": "active",
-      "effect_description": "Master submissions: one success can KO a startled target, or two rounds otherwise. Can dispatch KO’d targets instantly.",
-      "system_hook": "on_submission_attempt",
-      "roll_required": true,
-      "modifiers": { "submission_KO_on_success": true, "submission_rounds_to_KO": 2, "instant_KO_dispatch": true }
-    },
-    {
-      "level": 4,
-      "effect_type": "passive",
-      "effect_description": "While unarmed, gain extra attack (Flick).",
-      "system_hook": "on_unarmed_attack",
-      "roll_required": false,
-      "modifiers": { "extra_attack_flick": true }
-    },
-    {
-      "level": 5,
-      "effect_type": "active",
-      "effect_description": "If dropped to 0 HP in combat, regain half HP once/day; after, collapse for 8 hours.",
-      "system_hook": "on_zero_hp_combat",
-      "roll_required": false,
-      "modifiers": { "regain_half_hp_once_per_day": true, "collapse_hours": 8 }
-    }
-  ]
-}
+    ]
+  },
+  {
+    "$schemaVersion": "1.0",
+    "name": "Business",
+    "attribute": "Charisma",
+    "description": "Knowledge and application of trade, finance, and negotiation.",
+    "levels": [
+      {
+        "level": 1,
+        "effect_type": "passive",
+        "effect_description": "Earn 10% more on trades.",
+        "system_hook": "on_trade",
+        "roll_required": false,
+        "modifiers": {
+          "trade_profit_bonus_pct": 10
+        }
+      },
+      {
+        "level": 2,
+        "effect_type": "passive",
+        "effect_description": "Have black market contacts.",
+        "system_hook": "on_black_market",
+        "roll_required": false,
+        "modifiers": {
+          "has_contact": "black_market"
+        }
+      },
+      {
+        "level": 3,
+        "effect_type": "passive",
+        "effect_description": "Estimate item value instantly.",
+        "system_hook": "on_appraise",
+        "roll_required": false,
+        "modifiers": {
+          "auto_appraise": true
+        }
+      },
+      {
+        "level": 4,
+        "effect_type": "active",
+        "effect_description": "Draft service-for-goods contracts; contestable by skill roll.",
+        "system_hook": "on_contract_creation",
+        "roll_required": true,
+        "modifiers": {
+          "can_contract": true
+        }
+      },
+      {
+        "level": 5,
+        "effect_type": "passive",
+        "effect_description": "Establish business for 10% sessional profit.",
+        "system_hook": "on_establish_business",
+        "roll_required": false,
+        "modifiers": {
+          "business_profit_pct": 10
+        }
+      }
+    ]
+  },
+  {
+    "$schemaVersion": "1.0",
+    "name": "Called Shot",
+    "attribute": "Dexterity",
+    "description": "Targeted ranged attacks aimed at weakening or disabling enemies.",
+    "levels": [
+      {
+        "level": 1,
+        "effect_type": "passive",
+        "effect_description": "Add Dexterity to ranged weapon damage.",
+        "system_hook": "on_ranged_attack",
+        "roll_required": false,
+        "modifiers": {
+          "damage_bonus_attr": "Dexterity"
+        }
+      },
+      {
+        "level": 2,
+        "effect_type": "passive",
+        "effect_description": "Gain 1/2 cover when using ranged weapons.",
+        "system_hook": "on_cover_calc",
+        "roll_required": false,
+        "modifiers": {
+          "cover_bonus": 0.5
+        }
+      },
+      {
+        "level": 3,
+        "effect_type": "passive",
+        "effect_description": "May legally obtain heavy weapons.",
+        "system_hook": "on_weapon_purchase",
+        "roll_required": false,
+        "modifiers": {
+          "legal_heavy_weapons": true
+        }
+      },
+      {
+        "level": 4,
+        "effect_type": "active",
+        "effect_description": "Cover fire gives enemies disadvantage on attacks.",
+        "system_hook": "on_cover_fire",
+        "roll_required": true,
+        "modifiers": {
+          "enemy_disadvantage_on_attack": true
+        }
+      },
+      {
+        "level": 5,
+        "effect_type": "passive",
+        "effect_description": "Ignore cover when attacking.",
+        "system_hook": "on_attack_with_cover",
+        "roll_required": false,
+        "modifiers": {
+          "ignore_cover": true
+        }
+      }
+    ]
+  },
+  {
+    "$schemaVersion": "1.0",
+    "name": "Called Strike",
+    "attribute": "Constitution",
+    "description": "Precision melee strikes to control or disable opponents.",
+    "levels": [
+      {
+        "level": 1,
+        "effect_type": "passive",
+        "effect_description": "Add Constitution to melee/unarmed damage.",
+        "system_hook": "on_melee_attack",
+        "roll_required": false,
+        "modifiers": {
+          "damage_bonus_attr": "Constitution"
+        }
+      },
+      {
+        "level": 2,
+        "effect_type": "passive",
+        "effect_description": "Opponent has disadvantage against you after you hit them.",
+        "system_hook": "on_opponent_attack_post_hit",
+        "roll_required": false,
+        "modifiers": {
+          "opponent_disadvantage_after_hit": true
+        }
+      },
+      {
+        "level": 3,
+        "effect_type": "passive",
+        "effect_description": "+2 damage with improvised weapons.",
+        "system_hook": "on_improvised_weapon_attack",
+        "roll_required": false,
+        "modifiers": {
+          "improvised_weapon_damage_bonus": 2
+        }
+      },
+      {
+        "level": 4,
+        "effect_type": "passive",
+        "effect_description": "Thrown improvised weapons have 30ft range and +2 damage.",
+        "system_hook": "on_thrown_improvised_weapon",
+        "roll_required": false,
+        "modifiers": {
+          "throw_range": 30,
+          "thrown_damage_bonus": 2
+        }
+      },
+      {
+        "level": 5,
+        "effect_type": "active",
+        "effect_description": "Make 2 melee/unarmed attacks per action if one is a Called Strike.",
+        "system_hook": "on_attack_action",
+        "roll_required": false,
+        "modifiers": {
+          "extra_attack_if_called_strike": true
+        }
+      }
+    ]
+  },
+  {
+    "$schemaVersion": "1.0",
+    "name": "Gambling",
+    "attribute": "Charisma",
+    "description": "Luck manipulation, bluffing, and risk-reward mastery.",
+    "levels": [
+      {
+        "level": 1,
+        "effect_type": "passive",
+        "effect_description": "Advantage on bluffing.",
+        "system_hook": "on_bluff_check",
+        "roll_required": true,
+        "modifiers": {
+          "advantage_on": [
+            "bluff"
+          ]
+        }
+      },
+      {
+        "level": 2,
+        "effect_type": "passive",
+        "effect_description": "Know when a game is rigged.",
+        "system_hook": "on_gambling_session",
+        "roll_required": false,
+        "modifiers": {
+          "auto_detect": [
+            "rigged_game"
+          ]
+        }
+      },
+      {
+        "level": 3,
+        "effect_type": "active",
+        "effect_description": "Flip a coin on a failed attack roll to potentially crit.",
+        "system_hook": "on_attack_roll_fail",
+        "roll_required": true,
+        "modifiers": {
+          "can_coin_flip_for_crit": true
+        }
+      },
+      {
+        "level": 4,
+        "effect_type": "passive",
+        "effect_description": "Advantage on reading intentions.",
+        "system_hook": "on_read_intent",
+        "roll_required": true,
+        "modifiers": {
+          "advantage_on": [
+            "read_intentions"
+          ]
+        }
+      },
+      {
+        "level": 5,
+        "effect_type": "active",
+        "effect_description": "Sense danger level of a situation once per day.",
+        "system_hook": "on_enter_situation",
+        "roll_required": false,
+        "modifiers": {
+          "sense_danger_daily": true
+        }
+      }
+    ]
+  },
+  {
+    "$schemaVersion": "1.0",
+    "name": "Gunning",
+    "attribute": "Dexterity",
+    "description": "Combat training with ranged weapons, especially in high-pressure scenarios.",
+    "levels": [
+      {
+        "level": 1,
+        "effect_type": "passive",
+        "effect_description": "Enemies have disadvantage when shooting at you while sprinting.",
+        "system_hook": "on_enemy_shoot_while_sprinting",
+        "roll_required": false,
+        "modifiers": {
+          "enemy_disadvantage_when_sprinting": true
+        }
+      },
+      {
+        "level": 2,
+        "effect_type": "passive",
+        "effect_description": "Advantage in close-range firefights.",
+        "system_hook": "on_close_range_firefight",
+        "roll_required": true,
+        "modifiers": {
+          "advantage_on": [
+            "close_range_firefight"
+          ]
+        }
+      },
+      {
+        "level": 3,
+        "effect_type": "active",
+        "effect_description": "Make 2 attacks per action; -5 penalty on 2nd if heavy weapon.",
+        "system_hook": "on_attack_action",
+        "roll_required": true,
+        "modifiers": {
+          "extra_attack": true,
+          "second_attack_penalty_heavy": -5
+        }
+      },
+      {
+        "level": 4,
+        "effect_type": "passive",
+        "effect_description": "Advantage on initiative rolls.",
+        "system_hook": "on_initiative",
+        "roll_required": true,
+        "modifiers": {
+          "advantage_on": [
+            "initiative"
+          ]
+        }
+      },
+      {
+        "level": 5,
+        "effect_type": "active",
+        "effect_description": "Can stun a target using 2 ranged shots.",
+        "system_hook": "on_double_ranged_attack",
+        "roll_required": true,
+        "modifiers": {
+          "can_stun_with_double_shot": true
+        }
+      }
+    ]
+  },
+  {
+    "$schemaVersion": "1.0",
+    "name": "Hijack",
+    "attribute": "Intelligence",
+    "description": "The art of breaking, entering, and stealing vehicles or valuable tech.",
+    "levels": [
+      {
+        "level": 1,
+        "effect_type": "active",
+        "effect_description": "Open basic locks and pick pockets.",
+        "system_hook": "on_lockpicking_or_pickpocket",
+        "roll_required": true,
+        "modifiers": {
+          "can_open_basic_locks": true,
+          "can_pickpocket": true
+        }
+      },
+      {
+        "level": 2,
+        "effect_type": "active",
+        "effect_description": "Steal vehicles and disable alarms with advantage.",
+        "system_hook": "on_vehicle_theft_or_alarm",
+        "roll_required": true,
+        "modifiers": {
+          "advantage_on": [
+            "vehicle_theft",
+            "disable_alarm"
+          ]
+        }
+      },
+      {
+        "level": 3,
+        "effect_type": "passive",
+        "effect_description": "Spot high-value items instantly.",
+        "system_hook": "on_search_for_loot",
+        "roll_required": false,
+        "modifiers": {
+          "auto_detect_high_value_items": true
+        }
+      },
+      {
+        "level": 4,
+        "effect_type": "active",
+        "effect_description": "Plan a heist with advantage on infiltration rolls.",
+        "system_hook": "on_heist_planning",
+        "roll_required": true,
+        "modifiers": {
+          "advantage_on": [
+            "infiltration"
+          ]
+        }
+      },
+      {
+        "level": 5,
+        "effect_type": "active",
+        "effect_description": "Execute heists with reroll on any 1 failed check.",
+        "system_hook": "on_heist_execution",
+        "roll_required": true,
+        "modifiers": {
+          "reroll_one_failure_per_heist": true
+        }
+      }
+    ]
+  },
+  {
+    "$schemaVersion": "1.0",
+    "name": "History",
+    "attribute": "Intelligence",
+    "description": "Deep knowledge of past events, factions, and lost technologies.",
+    "levels": [
+      {
+        "level": 1,
+        "effect_type": "passive",
+        "effect_description": "You never forget past events.",
+        "system_hook": "on_memory_check",
+        "roll_required": false,
+        "modifiers": {
+          "perfect_memory": true
+        }
+      },
+      {
+        "level": 2,
+        "effect_type": "passive",
+        "effect_description": "Know current wars and political factions.",
+        "system_hook": "on_faction_query",
+        "roll_required": false,
+        "modifiers": {
+          "faction_knowledge": true
+        }
+      },
+      {
+        "level": 3,
+        "effect_type": "active",
+        "effect_description": "Recreate historical items.",
+        "system_hook": "on_recreate_item",
+        "roll_required": true,
+        "modifiers": {
+          "can_recreate_historical_items": true
+        }
+      },
+      {
+        "level": 4,
+        "effect_type": "passive",
+        "effect_description": "Know the location of lost tech.",
+        "system_hook": "on_lost_tech_query",
+        "roll_required": false,
+        "modifiers": {
+          "lost_tech_knowledge": true
+        }
+      },
+      {
+        "level": 5,
+        "effect_type": "active",
+        "effect_description": "Predict future trends based on history.",
+        "system_hook": "on_trend_prediction",
+        "roll_required": true,
+        "modifiers": {
+          "trend_prediction": true
+        }
+      }
+    ]
+  },
+  {
+    "$schemaVersion": "1.0",
+    "name": "Mechanics",
+    "attribute": "Wisdom",
+    "description": "Repair and creation of machines and automated systems.",
+    "levels": [
+      {
+        "level": 1,
+        "effect_type": "active",
+        "effect_description": "Repair from blueprint without rolling.",
+        "system_hook": "on_repair_with_blueprint",
+        "roll_required": false,
+        "modifiers": {
+          "auto_repair_if_blueprint": true
+        }
+      },
+      {
+        "level": 2,
+        "effect_type": "active",
+        "effect_description": "Install common upgrades with no roll.",
+        "system_hook": "on_upgrade_install",
+        "roll_required": false,
+        "modifiers": {
+          "auto_install_common_upgrade": true
+        }
+      },
+      {
+        "level": 3,
+        "effect_type": "passive",
+        "effect_description": "Replicate known machines faster.",
+        "system_hook": "on_replicate_machine",
+        "roll_required": false,
+        "modifiers": {
+          "replicate_speed_multiplier": 2
+        }
+      },
+      {
+        "level": 4,
+        "effect_type": "active",
+        "effect_description": "Craft unique upgrades with advantage.",
+        "system_hook": "on_craft_unique_upgrade",
+        "roll_required": true,
+        "modifiers": {
+          "advantage_on": [
+            "craft_unique_upgrade"
+          ]
+        }
+      },
+      {
+        "level": 5,
+        "effect_type": "active",
+        "effect_description": "Create entirely new machines with advantage.",
+        "system_hook": "on_create_new_machine",
+        "roll_required": true,
+        "modifiers": {
+          "advantage_on": [
+            "create_new_machine"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "$schemaVersion": "1.0",
+    "name": "Medical",
+    "attribute": "Wisdom",
+    "description": "Diagnosis and treatment of injuries, conditions, and infections.",
+    "levels": [
+      {
+        "level": 1,
+        "effect_type": "active",
+        "effect_description": "Heal 1d4 + Wisdom with a kit.",
+        "system_hook": "on_heal_with_kit",
+        "roll_required": true,
+        "modifiers": {
+          "heal_amount": "1d4+Wisdom",
+          "requires_kit": true
+        }
+      },
+      {
+        "level": 2,
+        "effect_type": "active",
+        "effect_description": "Stop Bleeding status.",
+        "system_hook": "on_bleed_stop_attempt",
+        "roll_required": true,
+        "modifiers": {
+          "can_stop_bleeding": true
+        }
+      },
+      {
+        "level": 3,
+        "effect_type": "active",
+        "effect_description": "Heal 1d12 + Wisdom.",
+        "system_hook": "on_heal_major",
+        "roll_required": true,
+        "modifiers": {
+          "heal_amount": "1d12+Wisdom"
+        }
+      },
+      {
+        "level": 4,
+        "effect_type": "active",
+        "effect_description": "Remove Injured status.",
+        "system_hook": "on_injury_removal_attempt",
+        "roll_required": true,
+        "modifiers": {
+          "can_remove_injured": true
+        }
+      },
+      {
+        "level": 5,
+        "effect_type": "active",
+        "effect_description": "Reproduce medicines at half cost.",
+        "system_hook": "on_reproduce_medicine",
+        "roll_required": false,
+        "modifiers": {
+          "medicine_cost_multiplier": 0.5
+        }
+      }
+    ]
+  },
+  {
+    "$schemaVersion": "1.0",
+    "name": "Melee",
+    "attribute": "Constitution or Dexterity",
+    "description": "Expertise in close-quarters combat with melee weapons, allowing for defense, aggression, and precision strikes.",
+    "levels": [
+      {
+        "level": 1,
+        "effect_type": "passive",
+        "effect_description": "You have 1/2 cover when wielding a melee weapon within 10ft of an enemy.",
+        "system_hook": "on_cover_with_melee",
+        "roll_required": false,
+        "modifiers": {
+          "cover_bonus_melee": 0.5
+        }
+      },
+      {
+        "level": 2,
+        "effect_type": "active",
+        "effect_description": "Deflect incoming shots, gaining +3 Armor Rating; costs one reaction while holding a melee weapon.",
+        "system_hook": "on_deflect_shot_with_melee",
+        "roll_required": true,
+        "modifiers": {
+          "armor_bonus_on_deflect": 3,
+          "uses_reaction": true
+        }
+      },
+      {
+        "level": 3,
+        "effect_type": "passive",
+        "effect_description": "Your melee weapon damage is increased by +3.",
+        "system_hook": "on_melee_attack",
+        "roll_required": false,
+        "modifiers": {
+          "melee_damage_bonus": 3
+        }
+      },
+      {
+        "level": 4,
+        "effect_type": "active",
+        "effect_description": "Using an action, you can accurately read a target’s Hitpoints.",
+        "system_hook": "on_read_target_hp",
+        "roll_required": true,
+        "modifiers": {
+          "can_read_target_hp": true
+        }
+      },
+      {
+        "level": 5,
+        "effect_type": "active",
+        "effect_description": "Attempt to finish a target below 25% HP with an opposed roll.",
+        "system_hook": "on_finishing_move",
+        "roll_required": true,
+        "modifiers": {
+          "finisher_opposed_roll": true
+        }
+      }
+    ]
+  },
+  {
+    "$schemaVersion": "1.0",
+    "name": "Nutrition",
+    "attribute": "Constitution",
+    "description": "Mastery over food, health, and dietary effects, letting you enhance meals and grant special bonuses.",
+    "levels": [
+      {
+        "level": 1,
+        "effect_type": "active",
+        "effect_description": "Those who eat your food gain +5 movement and immunity to ingested toxins for 12 hours.",
+        "system_hook": "on_cook_food",
+        "roll_required": false,
+        "modifiers": {
+          "movement_bonus": 5,
+          "toxin_immunity_hours": 12
+        }
+      },
+      {
+        "level": 2,
+        "effect_type": "active",
+        "effect_description": "You can cook exotic beasts, granting unique effects based on the animal.",
+        "system_hook": "on_cook_exotic_beast",
+        "roll_required": true,
+        "modifiers": {
+          "unique_effect_per_beast": true
+        }
+      },
+      {
+        "level": 3,
+        "effect_type": "passive",
+        "effect_description": "Sniff out rare ingredients that may give enhancements when cooked.",
+        "system_hook": "on_ingredient_search",
+        "roll_required": false,
+        "modifiers": {
+          "can_find_rare_ingredients": true
+        }
+      },
+      {
+        "level": 4,
+        "effect_type": "active",
+        "effect_description": "Create a signature side dish that grants inspiration once per use.",
+        "system_hook": "on_signature_dish",
+        "roll_required": false,
+        "modifiers": {
+          "grants_inspiration_once": true
+        }
+      },
+      {
+        "level": 5,
+        "effect_type": "active",
+        "effect_description": "Your signature dish grants a special ability to those who eat it.",
+        "system_hook": "on_signature_dish_special",
+        "roll_required": false,
+        "modifiers": {
+          "signature_dish_special_ability": true
+        }
+      }
+    ]
+  },
+  {
+    "$schemaVersion": "1.0",
+    "name": "Navigation",
+    "attribute": "Intelligence",
+    "description": "The science of finding your way in unknown terrain, and making efficient, sometimes impossible, journeys.",
+    "levels": [
+      {
+        "level": 1,
+        "effect_type": "active",
+        "effect_description": "Movement bonus +5.",
+        "system_hook": "on_navigation_check",
+        "roll_required": false,
+        "modifiers": {
+          "movement_bonus": 5
+        }
+      },
+      {
+        "level": 2,
+        "effect_type": "active",
+        "effect_description": "Always find a shortcut; halve the travel time.",
+        "system_hook": "on_find_shortcut",
+        "roll_required": true,
+        "modifiers": {
+          "shortcut_found": true,
+          "travel_time_multiplier": 0.5
+        }
+      },
+      {
+        "level": 3,
+        "effect_type": "active",
+        "effect_description": "Jump directly to planets or always find civilization if not in Space Age.",
+        "system_hook": "on_jump_travel",
+        "roll_required": true,
+        "modifiers": {
+          "can_jump_to_planet": true,
+          "find_civilization": true
+        }
+      },
+      {
+        "level": 4,
+        "effect_type": "active",
+        "effect_description": "Plot perfect course through dangerous terrain, adding Navigation roll to vehicle operator.",
+        "system_hook": "on_plot_course",
+        "roll_required": true,
+        "modifiers": {
+          "navigation_bonus_to_operator": true
+        }
+      },
+      {
+        "level": 5,
+        "effect_type": "passive",
+        "effect_description": "Navigate any foreign terrain without a map.",
+        "system_hook": "on_navigation_without_map",
+        "roll_required": false,
+        "modifiers": {
+          "no_map_required": true
+        }
+      }
+    ]
+  },
+  {
+    "$schemaVersion": "1.0",
+    "name": "Operator",
+    "attribute": "Dexterity",
+    "description": "Mastery of piloting and maintaining vehicles or ships, making you an ace behind the wheel or controls.",
+    "levels": [
+      {
+        "level": 1,
+        "effect_type": "passive",
+        "effect_description": "Operate vehicles without a skill check.",
+        "system_hook": "on_basic_vehicle_operation",
+        "roll_required": false,
+        "modifiers": {
+          "no_roll_for_basic_vehicle": true
+        }
+      },
+      {
+        "level": 2,
+        "effect_type": "active",
+        "effect_description": "Advantage on stealth with vehicles or ships.",
+        "system_hook": "on_vehicle_stealth",
+        "roll_required": true,
+        "modifiers": {
+          "advantage_on": [
+            "vehicle_stealth"
+          ]
+        }
+      },
+      {
+        "level": 3,
+        "effect_type": "passive",
+        "effect_description": "Spot wear and tear and use solid checklists for vehicle maintenance.",
+        "system_hook": "on_vehicle_maintenance",
+        "roll_required": false,
+        "modifiers": {
+          "auto_spot_maintenance_issues": true
+        }
+      },
+      {
+        "level": 4,
+        "effect_type": "active",
+        "effect_description": "Advantage on challenging vehicle maneuvers.",
+        "system_hook": "on_vehicle_maneuver",
+        "roll_required": true,
+        "modifiers": {
+          "advantage_on": [
+            "vehicle_maneuver"
+          ]
+        }
+      },
+      {
+        "level": 5,
+        "effect_type": "active",
+        "effect_description": "Repair your vehicle without a mechanic check (need parts/equipment).",
+        "system_hook": "on_vehicle_self_repair",
+        "roll_required": false,
+        "modifiers": {
+          "no_roll_for_vehicle_repair": true,
+          "requires_parts": true
+        }
+      }
+    ]
+  },
+  {
+    "$schemaVersion": "1.0",
+    "name": "Perception",
+    "attribute": "Wisdom",
+    "description": "Heightened awareness and observation, letting you spot details, read people, and sense threats.",
+    "levels": [
+      {
+        "level": 1,
+        "effect_type": "active",
+        "effect_description": "Once per day, gain advantage on your next Perception roll.",
+        "system_hook": "on_perception_check",
+        "roll_required": true,
+        "modifiers": {
+          "daily_advantage_perception": true
+        }
+      },
+      {
+        "level": 2,
+        "effect_type": "passive",
+        "effect_description": "Double the distance for sounds and sights; advantage with optics or hearing.",
+        "system_hook": "on_perception_test",
+        "roll_required": false,
+        "modifiers": {
+          "perception_range_multiplier": 2,
+          "advantage_with_aids": true
+        }
+      },
+      {
+        "level": 3,
+        "effect_type": "passive",
+        "effect_description": "+2 to rolls when inspecting objects or locations.",
+        "system_hook": "on_inspect",
+        "roll_required": false,
+        "modifiers": {
+          "inspect_bonus": 2
+        }
+      },
+      {
+        "level": 4,
+        "effect_type": "active",
+        "effect_description": "Advantage on reading people’s intent.",
+        "system_hook": "on_read_intent",
+        "roll_required": true,
+        "modifiers": {
+          "advantage_on": [
+            "read_intentions"
+          ]
+        }
+      },
+      {
+        "level": 5,
+        "effect_type": "passive",
+        "effect_description": "Add Intelligence + Wisdom bonus to Perception checks.",
+        "system_hook": "on_perception_check",
+        "roll_required": false,
+        "modifiers": {
+          "bonus_perception_mod": [
+            "Intelligence",
+            "Wisdom"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "$schemaVersion": "1.0",
+    "name": "Religion",
+    "attribute": "Intelligence",
+    "description": "Understanding of religious lore, spiritual influence, and communion with the divine.",
+    "levels": [
+      {
+        "level": 1,
+        "effect_type": "passive",
+        "effect_description": "Know the basics of two religions.",
+        "system_hook": "on_religion_knowledge_check",
+        "roll_required": false,
+        "modifiers": {
+          "religions_known": 2
+        }
+      },
+      {
+        "level": 2,
+        "effect_type": "active",
+        "effect_description": "Advantage persuading people to forgive using spirituality.",
+        "system_hook": "on_persuade_forgiveness",
+        "roll_required": true,
+        "modifiers": {
+          "advantage_on": [
+            "spiritual_persuasion"
+          ]
+        }
+      },
+      {
+        "level": 3,
+        "effect_type": "active",
+        "effect_description": "Meditate for 6 hours to clear toxins or sickness.",
+        "system_hook": "on_meditate_detox",
+        "roll_required": false,
+        "modifiers": {
+          "detox_meditation_hours": 6
+        }
+      },
+      {
+        "level": 4,
+        "effect_type": "passive",
+        "effect_description": "Know of lost religious artifacts; get a clue once per month.",
+        "system_hook": "on_artifact_query",
+        "roll_required": false,
+        "modifiers": {
+          "artifact_clue_monthly": true
+        }
+      },
+      {
+        "level": 5,
+        "effect_type": "active",
+        "effect_description": "Communicate with a deity monthly for unique challenges and rewards.",
+        "system_hook": "on_deity_communion",
+        "roll_required": false,
+        "modifiers": {
+          "deity_communication_monthly": true
+        }
+      }
+    ]
+  },
+  {
+    "$schemaVersion": "1.0",
+    "name": "Science",
+    "attribute": "Intelligence",
+    "description": "Comprehension of scientific fields and their practical, technological, or medical applications.",
+    "levels": [
+      {
+        "level": 1,
+        "effect_type": "active",
+        "effect_description": "Gain +2 when studying or inspecting new science topics.",
+        "system_hook": "on_study_science",
+        "roll_required": true,
+        "modifiers": {
+          "science_study_bonus": 2
+        }
+      },
+      {
+        "level": 2,
+        "effect_type": "active",
+        "effect_description": "Advantage identifying new technology.",
+        "system_hook": "on_identify_technology",
+        "roll_required": true,
+        "modifiers": {
+          "advantage_on": [
+            "identify_technology"
+          ]
+        }
+      },
+      {
+        "level": 3,
+        "effect_type": "active",
+        "effect_description": "Sabotage technology you understand.",
+        "system_hook": "on_sabotage_technology",
+        "roll_required": true,
+        "modifiers": {
+          "can_sabotage_technology": true
+        }
+      },
+      {
+        "level": 4,
+        "effect_type": "passive",
+        "effect_description": "Add a scientific academy to your training and gain its bonuses.",
+        "system_hook": "on_gain_academy_bonus",
+        "roll_required": false,
+        "modifiers": {
+          "has_scientific_academy_bonus": true
+        }
+      },
+      {
+        "level": 5,
+        "effect_type": "passive",
+        "effect_description": "Apply your Science level to any roll in Technology, Medical, Mechanics, or Nutrition.",
+        "system_hook": "on_cross_skill_roll",
+        "roll_required": false,
+        "modifiers": {
+          "apply_science_level_to": [
+            "Technology",
+            "Medical",
+            "Mechanics",
+            "Nutrition"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "$schemaVersion": "1.0",
+    "name": "Speech",
+    "attribute": "Charisma",
+    "description": "Persuasive, clear, and compelling use of language in any social situation.",
+    "levels": [
+      {
+        "level": 1,
+        "effect_type": "active",
+        "effect_description": "+2 to Speech rolls when persuading someone.",
+        "system_hook": "on_persuade_attempt",
+        "roll_required": true,
+        "modifiers": {
+          "persuasion_bonus": 2
+        }
+      },
+      {
+        "level": 2,
+        "effect_type": "active",
+        "effect_description": "Advantage when bribing with Speech.",
+        "system_hook": "on_bribe_attempt",
+        "roll_required": true,
+        "modifiers": {
+          "advantage_on": [
+            "bribe"
+          ]
+        }
+      },
+      {
+        "level": 3,
+        "effect_type": "active",
+        "effect_description": "Communicate with people who don’t speak your language without disadvantage.",
+        "system_hook": "on_communicate_foreign_language",
+        "roll_required": true,
+        "modifiers": {
+          "no_disadvantage_on_foreign_language": true
+        }
+      },
+      {
+        "level": 4,
+        "effect_type": "active",
+        "effect_description": "After a 1-minute conversation, you can assess Intelligence, Wisdom, and Charisma.",
+        "system_hook": "on_assess_attributes",
+        "roll_required": false,
+        "modifiers": {
+          "can_assess_attributes": [
+            "Intelligence",
+            "Wisdom",
+            "Charisma"
+          ]
+        }
+      },
+      {
+        "level": 5,
+        "effect_type": "active",
+        "effect_description": "Give a pre-battle speech to grant 6 allies +1 Armor, +2 to hit, or +3 damage for 8 hours (once per long rest).",
+        "system_hook": "on_pre_battle_speech",
+        "roll_required": false,
+        "modifiers": {
+          "buff_allies": 6,
+          "buff_options": [
+            "+1 Armor",
+            "+2 to hit",
+            "+3 damage"
+          ],
+          "buff_duration": "8h",
+          "use_limit": "1 per long rest"
+        }
+      }
+    ]
+  },
+  {
+    "$schemaVersion": "1.0",
+    "name": "Stealth",
+    "attribute": "Dexterity",
+    "description": "Remaining unseen, blending into crowds, or vanishing from pursuit.",
+    "levels": [
+      {
+        "level": 1,
+        "effect_type": "active",
+        "effect_description": "Advantage to Stealth rolls when alone.",
+        "system_hook": "on_stealth_attempt",
+        "roll_required": true,
+        "modifiers": {
+          "advantage_on": [
+            "stealth_when_alone"
+          ]
+        }
+      },
+      {
+        "level": 2,
+        "effect_type": "passive",
+        "effect_description": "Hidden in crowds by default.",
+        "system_hook": "on_crowd_blend",
+        "roll_required": false,
+        "modifiers": {
+          "hidden_in_crowds": true
+        }
+      },
+      {
+        "level": 3,
+        "effect_type": "active",
+        "effect_description": "+4 to detect or pickpocket others.",
+        "system_hook": "on_detect_or_pickpocket",
+        "roll_required": true,
+        "modifiers": {
+          "detect_pickpocket_bonus": 4
+        }
+      },
+      {
+        "level": 4,
+        "effect_type": "active",
+        "effect_description": "Distraction grants party advantage on Stealth rolls.",
+        "system_hook": "on_distraction_for_party",
+        "roll_required": true,
+        "modifiers": {
+          "party_stealth_advantage_with_distraction": true
+        }
+      },
+      {
+        "level": 5,
+        "effect_type": "active",
+        "effect_description": "In combat with 3+ enemies, use a reaction to give 2 attackers disadvantage against you.",
+        "system_hook": "on_multiple_enemy_combat",
+        "roll_required": false,
+        "modifiers": {
+          "disadvantage_for_attackers": 2,
+          "uses_reaction": true,
+          "min_enemies": 3
+        }
+      }
+    ]
+  },
+  {
+    "$schemaVersion": "1.0",
+    "name": "Street",
+    "attribute": "Wisdom",
+    "description": "Criminal savvy, underworld contacts, and survival instincts in urban environments.",
+    "levels": [
+      {
+        "level": 1,
+        "effect_type": "passive",
+        "effect_description": "Spot criminals and their gang affiliations.",
+        "system_hook": "on_urban_scan",
+        "roll_required": false,
+        "modifiers": {
+          "can_spot_gang_affiliation": true
+        }
+      },
+      {
+        "level": 2,
+        "effect_type": "passive",
+        "effect_description": "Know when you’re being tailed; advantage tracking trackers.",
+        "system_hook": "on_tail_check",
+        "roll_required": false,
+        "modifiers": {
+          "advantage_on_tracking_trackers": true,
+          "auto_know_when_tailed": true
+        }
+      },
+      {
+        "level": 3,
+        "effect_type": "passive",
+        "effect_description": "Always have an underground contact.",
+        "system_hook": "on_need_contact",
+        "roll_required": false,
+        "modifiers": {
+          "has_underground_contact": true
+        }
+      },
+      {
+        "level": 4,
+        "effect_type": "passive",
+        "effect_description": "Can’t be surprised in cities.",
+        "system_hook": "on_urban_encounter",
+        "roll_required": false,
+        "modifiers": {
+          "urban_surprise_immunity": true
+        }
+      },
+      {
+        "level": 5,
+        "effect_type": "active",
+        "effect_description": "Advantage on attack rolls while in a city.",
+        "system_hook": "on_attack_in_city",
+        "roll_required": true,
+        "modifiers": {
+          "advantage_on": [
+            "attack_in_city"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "$schemaVersion": "1.0",
+    "name": "Technology",
+    "attribute": "Intelligence",
+    "description": "Technical aptitude for programming, digital devices, and mechanical systems.",
+    "levels": [
+      {
+        "level": 1,
+        "effect_type": "active",
+        "effect_description": "Add +2 to any roll involving coding or learning tech.",
+        "system_hook": "on_technology_roll",
+        "roll_required": true,
+        "modifiers": {
+          "technology_roll_bonus": 2
+        }
+      },
+      {
+        "level": 2,
+        "effect_type": "active",
+        "effect_description": "Disable equipment with tools if you understand it.",
+        "system_hook": "on_disable_equipment",
+        "roll_required": true,
+        "modifiers": {
+          "can_disable_equipment_with_tools": true
+        }
+      },
+      {
+        "level": 3,
+        "effect_type": "active",
+        "effect_description": "Upgrade devices to Splicers/Data Pads (Space Age) or tweak tech for other uses.",
+        "system_hook": "on_upgrade_device",
+        "roll_required": true,
+        "modifiers": {
+          "can_upgrade_device": true
+        }
+      },
+      {
+        "level": 4,
+        "effect_type": "active",
+        "effect_description": "Create blueprints for any tech you have access to.",
+        "system_hook": "on_create_blueprint",
+        "roll_required": false,
+        "modifiers": {
+          "can_create_blueprint": true
+        }
+      },
+      {
+        "level": 5,
+        "effect_type": "active",
+        "effect_description": "Advantage shutting down/dismantling systems on vehicles or crafts.",
+        "system_hook": "on_shutdown_vehicle_system",
+        "roll_required": true,
+        "modifiers": {
+          "advantage_on": [
+            "shutdown_vehicle",
+            "dismantle_vehicle"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "$schemaVersion": "1.0",
+    "name": "Unarmed",
+    "attribute": "Constitution or Dexterity",
+    "description": "Hand-to-hand fighting prowess, grappling, submissions, and battlefield survival.",
+    "levels": [
+      {
+        "level": 1,
+        "effect_type": "passive",
+        "effect_description": "Advantage on physical contests; unarmed damage 1d4+Constitution.",
+        "system_hook": "on_physical_contest",
+        "roll_required": true,
+        "modifiers": {
+          "advantage_on": [
+            "physical_contest"
+          ],
+          "unarmed_damage": "1d4+Constitution"
+        }
+      },
+      {
+        "level": 2,
+        "effect_type": "passive",
+        "effect_description": "Unarmed strikes deal 1d6+Constitution.",
+        "system_hook": "on_unarmed_strike",
+        "roll_required": false,
+        "modifiers": {
+          "unarmed_damage": "1d6+Constitution"
+        }
+      },
+      {
+        "level": 3,
+        "effect_type": "active",
+        "effect_description": "Master submissions: one success can KO a startled target, or two rounds otherwise. Can dispatch KO’d targets instantly.",
+        "system_hook": "on_submission_attempt",
+        "roll_required": true,
+        "modifiers": {
+          "submission_KO_on_success": true,
+          "submission_rounds_to_KO": 2,
+          "instant_KO_dispatch": true
+        }
+      },
+      {
+        "level": 4,
+        "effect_type": "passive",
+        "effect_description": "While unarmed, gain extra attack (Flick).",
+        "system_hook": "on_unarmed_attack",
+        "roll_required": false,
+        "modifiers": {
+          "extra_attack_flick": true
+        }
+      },
+      {
+        "level": 5,
+        "effect_type": "active",
+        "effect_description": "If dropped to 0 HP in combat, regain half HP once/day; after, collapse for 8 hours.",
+        "system_hook": "on_zero_hp_combat",
+        "roll_required": false,
+        "modifiers": {
+          "regain_half_hp_once_per_day": true,
+          "collapse_hours": 8
+        }
+      }
+    ]
+  }
+]
