@@ -1,6 +1,8 @@
 // gamestate.js
 
 // Game state options: 'characterCreation', 'mainGame', 'battle', etc.
+import { loadCharacter } from './saveManager.js';
+
 let state = 'characterCreation';
 
 // Import modules only when needed (code splitting)
@@ -10,6 +12,12 @@ function loadModule(modulePath) {
 
 // Get root element
 const root = document.getElementById('game-state-root');
+
+// Load saved character, if any, and start in the main game
+const savedCharacter = loadCharacter();
+if (savedCharacter) {
+  state = 'mainGame';
+}
 
 function setState(newState) {
   state = newState;
