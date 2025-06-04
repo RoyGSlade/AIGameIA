@@ -5,7 +5,8 @@ import {
   displayRaceStep, displayProfessionStep, displayTrainingStep,
   displayPersonaStep, displaySkillSystemStep, displaySuperpowerStep,
   displayEraStep, displaySummaryStep, finalizeCharacter,
-  selectRace, selectProfession, selectTraining
+  selectRace, selectProfession, selectTraining,
+  playerPersona
 } from './characterCreation.js';
 
 let personaData = null;
