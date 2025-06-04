@@ -1,0 +1,4 @@
+{
+  "schemaVersion": "1.0.0",
+  "description": "Core data and rule schema for Infinite Ages. Bump this version whenever refactoring changes data structures or gameplay rules." 
+}

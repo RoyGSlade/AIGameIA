@@ -142,4 +142,6 @@ Update it alongside any major system change.*
 - Introduced custom neon scrollbars and fixed positioning for navigation headers
   and action buttons. Containers use `.summary-container` and `.summary-section`
   styles for the summary screen.
+- Implemented `saveManager.js` for persistent character saves. Save data now
+  includes the schema version to allow future migrations.
 
