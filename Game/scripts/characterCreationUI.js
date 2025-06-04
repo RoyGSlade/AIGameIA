@@ -28,12 +28,25 @@ const prompt = document.getElementById('prompt-text');
 const prevBtn = document.getElementById('prev-btn');
 const nextBtn = document.getElementById('next-btn');
 const trainingPanel = document.getElementById('training-panel');
+const progressNav = document.getElementById('progress-nav');
+
+const stepNames = ['Race','Profession','Training','Persona','Skills','Superpowers','Era','Summary'];
+
+function initProgressNav() {
+  progressNav.innerHTML = stepNames.map(n => `<span class="step">${n}</span>`).join('');
+}
+
+function updateProgressNav(step) {
+  const nodes = progressNav.querySelectorAll('.step');
+  nodes.forEach((n,i) => n.classList.toggle('active', i === step));
+}
 
 let uiStep = 0;
 
 async function init() {
   await loadAllData();
   uiStep = 0;
+  initProgressNav();
   renderStep();
 }
 
@@ -50,6 +63,7 @@ prevBtn.onclick = () => {
 
 function renderStep() {
   trainingPanel.style.display = uiStep === 2 ? 'block' : 'none';
+  updateProgressNav(uiStep);
   switch (uiStep) {
     case 0: displayRaceStep(); break;
     case 1: displayProfessionStep(); break;
@@ -379,22 +393,23 @@ const personaFields = [
 let buildPersona = {};
 
 function showPersonaBuilder() {
- if (!personaData || !personaData.personalityTypes) {
+  if (!personaData || !personaData.personalityTypes) {
     prompt.textContent = "Persona options not loaded yet. Please wait...";
     return;
   }
 
   content.innerHTML = '';
+
+  // finalize
   if (personaStep >= personaFields.length) {
-    // Validation: Ensure all fields filled
     if (!allPersonaFieldsFilled(buildPersona)) {
       prompt.textContent = "Please complete all fields before continuing.";
       personaStep = 0;
       showPersonaBuilder();
       return;
     }
-    // Assign to playerPersona (copy)
     Object.assign(playerPersona, buildPersona);
+    nextStep();
     uiStep++;
     renderStep();
     return;
@@ -403,41 +418,50 @@ function showPersonaBuilder() {
   const field = personaFields[personaStep];
   prompt.textContent = `Select or enter your ${field.label}:`;
 
-  // Option select list, textarea, or builder for appearance
-  if (field.key === "appearance") {
-    // Show custom appearance fields
+  let validator = () => true;
+
+  if (field.key === 'appearance') {
     showAppearanceBuilder();
-    return;
-  } else if (field.key === "traits") {
-    // Let user pick multiple traits (checkboxes)
+    validator = (checkOnly=false) => {
+      const data = {
+        eyeColor: document.getElementById('eyeColor').value,
+        hairColor: document.getElementById('hairColor').value,
+        hairStyle: document.getElementById('hairStyle').value,
+        height: document.getElementById('height').value,
+        build: document.getElementById('build').value,
+        skinTone: document.getElementById('skinTone').value,
+        features: Array.from(document.getElementById('features').selectedOptions).map(o => o.value),
+        voice: document.getElementById('voice').value,
+        description: document.getElementById('desc').value
+      };
+      if (!checkOnly) buildPersona.appearance = data;
+      return data.eyeColor && data.hairColor && data.hairStyle;
+    };
+    content.addEventListener('input', () => checkValid());
+    content.addEventListener('change', () => checkValid());
+  } else if (field.key === 'traits') {
     content.innerHTML = personaData.traits.map(trait =>
       `<label><input type="checkbox" name="trait" value="${trait}"> ${trait}</label>`
     ).join('<br>');
-    const nextBtn = document.createElement('button');
-    nextBtn.textContent = "Next";
-    nextBtn.onclick = () => {
-      buildPersona.traits = Array.from(document.querySelectorAll('input[name="trait"]:checked')).map(i => i.value);
-      personaStep++;
-      showPersonaBuilder();
+    validator = (checkOnly=false) => {
+      const vals = Array.from(document.querySelectorAll('input[name="trait"]:checked')).map(i => i.value);
+      if (!checkOnly) buildPersona.traits = vals;
+      return vals.length > 0;
     };
-    content.appendChild(nextBtn);
-  } else if (field.key === "contacts") {
-    // Let user pick 3 contacts
-    content.innerHTML = personaData.contacts.map((c, i) =>
+    content.addEventListener('change', () => checkValid());
+  } else if (field.key === 'contacts') {
+    content.innerHTML = personaData.contacts.map((c,i) =>
       `<label><input type="checkbox" name="contact" value="${i}"> ${c.name} (${c.relationship}): ${c.note}</label><br>`
     ).join('');
-    const nextBtn = document.createElement('button');
-    nextBtn.textContent = "Next";
-    nextBtn.onclick = () => {
-      buildPersona.contacts = Array.from(document.querySelectorAll('input[name="contact"]:checked'))
-        .slice(0, 3)
+    validator = (checkOnly=false) => {
+      const vals = Array.from(document.querySelectorAll('input[name="contact"]:checked'))
+        .slice(0,3)
         .map(i => personaData.contacts[i.value]);
-      personaStep++;
-      showPersonaBuilder();
+      if (!checkOnly) buildPersona.contacts = vals;
+      return vals.length > 0;
     };
-    content.appendChild(nextBtn);
-  } else if (field.key === "goals") {
-    // Short and Long goal textareas or selects
+    content.addEventListener('change', () => checkValid());
+  } else if (field.key === 'goals') {
     content.innerHTML = `
       <label>Short-term Goal: <input id="goal-short" type="text" placeholder="Short-term goal"></label><br>
       <label>Long-term Goal: <input id="goal-long" type="text" placeholder="Long-term goal"></label><br>
@@ -447,43 +471,57 @@ function showPersonaBuilder() {
       const r = personaData.goals[Math.floor(Math.random() * personaData.goals.length)];
       document.getElementById('goal-short').value = r.short;
       document.getElementById('goal-long').value = r.long;
+      checkValid();
     };
-    const nextBtn = document.createElement('button');
-    nextBtn.textContent = "Next";
-    nextBtn.onclick = () => {
-      buildPersona.goals = {
-        short: document.getElementById('goal-short').value,
-        long: document.getElementById('goal-long').value
-      };
-      personaStep++;
-      showPersonaBuilder();
+    ['input'].forEach(evt => {
+      document.getElementById('goal-short').addEventListener(evt, () => checkValid());
+      document.getElementById('goal-long').addEventListener(evt, () => checkValid());
+    });
+    validator = (checkOnly=false) => {
+      const short = document.getElementById('goal-short').value.trim();
+      const long = document.getElementById('goal-long').value.trim();
+      if (!checkOnly) buildPersona.goals = { short, long };
+      return short !== '' && long !== '';
     };
-    content.appendChild(nextBtn);
   } else {
-    // Options as radio or allow custom input
     content.innerHTML = field.options().map(opt =>
       `<label><input type="radio" name="${field.key}" value="${opt}"> ${opt}</label><br>`
     ).join('');
-    // Also allow custom input
     content.innerHTML += `<br><label>Write your own: <input type="text" id="custom-${field.key}" placeholder="Your answer"></label>`;
-    const nextBtn = document.createElement('button');
-    nextBtn.textContent = "Next";
-    nextBtn.onclick = () => {
-      // Check for selected or custom
-      let val = "";
+    const inputs = content.querySelectorAll('input');
+    inputs.forEach(i => i.addEventListener('input', () => checkValid()));
+    inputs.forEach(i => i.addEventListener('change', () => checkValid()));
+    validator = (checkOnly=false) => {
       const selected = document.querySelector(`input[name="${field.key}"]:checked`);
-      const custom = document.getElementById(`custom-${field.key}`).value;
-      if (custom) {
-        val = custom;
-      } else if (selected) {
-        val = selected.value;
-      }
-      buildPersona[field.key] = val;
+      const custom = document.getElementById(`custom-${field.key}`).value.trim();
+      const val = custom || (selected && selected.value) || '';
+      if (!checkOnly) buildPersona[field.key] = val;
+      return val !== '';
+    };
+  }
+
+  function checkValid() { nextBtn.disabled = !validator(true); }
+
+  nextBtn.textContent = personaStep === personaFields.length - 1 ? 'Finish Persona' : 'Next';
+  checkValid();
+
+  nextBtn.onclick = () => {
+    if (validator()) {
       personaStep++;
       showPersonaBuilder();
-    };
-    content.appendChild(nextBtn);
-  }
+    }
+  };
+
+  prevBtn.onclick = () => {
+    if (personaStep === 0) {
+      prevStep();
+      uiStep--;
+      renderStep();
+    } else {
+      personaStep--;
+      showPersonaBuilder();
+    }
+  };
 }
 
 function showAppearanceBuilder() {
@@ -499,23 +537,7 @@ function showAppearanceBuilder() {
     <label>Features: <select multiple id="features">${opts.features.map(c => `<option>${c}</option>`)}</select></label><br>
     <label>Voice: <select id="voice">${opts.voice.map(c => `<option>${c}</option>`)}</select></label><br>
     <label>Description: <textarea id="desc" rows="2" placeholder="Your description"></textarea></label><br>
-    <button id="appearance-next">Finish Persona</button>
   `;
-  document.getElementById('appearance-next').onclick = () => {
-    buildPersona.appearance = {
-      eyeColor: document.getElementById('eyeColor').value,
-      hairColor: document.getElementById('hairColor').value,
-      hairStyle: document.getElementById('hairStyle').value,
-      height: document.getElementById('height').value,
-      build: document.getElementById('build').value,
-      skinTone: document.getElementById('skinTone').value,
-      features: Array.from(document.getElementById('features').selectedOptions).map(opt => opt.value),
-      voice: document.getElementById('voice').value,
-      description: document.getElementById('desc').value
-    };
-    personaStep++;
-    showPersonaBuilder();
-  };
 }
 const requiredFields = [
   "personality", "motivation", "plan", "hardship", "goals",
@@ -531,6 +553,19 @@ function allPersonaFieldsFilled(obj) {
   if (!obj.appearance || Object.keys(obj.appearance).length === 0) return false;
   return true;
 }
+
+// --- Skill System Info ---
+window.displaySkillXPInfo = function(skills) {
+  content.innerHTML = `
+    <h2>Skill System</h2>
+    <p>Skills improve through use. Succeed at skill checks to gain experience and
+    unlock more abilities at higher levels.</p>
+    <ul>${skills.slice(0,5).map(s => `<li>${s.name}</li>`).join('')}</ul>
+  `;
+  // When viewing info, next/prev buttons simply move steps
+  prevBtn.onclick = () => { prevStep(); uiStep--; renderStep(); };
+  nextBtn.onclick = () => { nextStep(); uiStep++; renderStep(); };
+};
 window.displayPersonaBuilder = window.displayPersonaStep; // <-- this covers the "preset or build" screen
 
 
