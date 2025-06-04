@@ -1,147 +1,145 @@
----
-**For agent hand-off and runtime logic, see agents.md.**
----
-agent: codex
-project: Infinite Ages
-version: 1.0
-description: Modular, AI-driven, text-based RPG engine with card-based UI and human-readable JSON for all gameplay data and rules.
----
+# SYSTEM_SPEC.md – Infinite Ages RPG
 
-# AGENTS.md – System Definition & Implementation Card
-
-## 1. CORE PHILOSOPHY
-
-- Prioritize **player freedom, clarity, and extensibility**.
-- **All core gameplay rules and content are stored as human-readable JSON** (races, professions, trainings, skills, powers, NPC tags, etc).
-- **Every UI choice uses visually rich, interactive cards**—no default forms or unstyled lists.
-- Systems are **context-driven**: every object (character, NPC, item, choice) is tagged for AI/game logic.
-- Design for *future modding*, *API use*, and *GPT/AI agent parsing*.
+**Version:** 1.0  
+**Maintainer:** Donaven  
+**Last Updated:** [Fill in date]
 
 ---
 
-## 2. FILE STRUCTURE (REFERENCE)
+## 1. CORE PRINCIPLES
 
-/data/
-races.json
-professions.json
-trainings.json
-skills.json
-powers.json
-personaPresets.json
-npcs.json
-tags.json
-eras.json
-
-/ui/
-characterCreator.js
-personaBuilder.js
-cardComponents.js
-
-/ai/
-npcGenerator.js
-narrationEngine.js
-
-AGENTS.md
-README.md
+- **Readability comes first:** Favor standard, clean formatting and explicit code over clever hacks.
+- **Everything modular:** Features, logic, and data should be broken into reusable, self-contained functions.
+- **All content and mechanics are data-driven:** Use JSON for content/config; avoid hardcoding except for ultra-minimal cases.
+- **Extensibility and modding:** Structure all data and code to allow easy addition of new features/content without major rewrites.
+- **Documentation by log:** All automated or AI-generated code changes must append a summary entry to `codexlog.md` with a step-numbered list of changes made.
 
 ---
 
-## 3. CHARACTER CREATION FLOW
+## 2. FILE & FOLDER ORGANIZATION
 
-1. **Race:** Choose from /data/races.json.  
-   - Each race has: movement, vision, resistances, age, attributes, skill options, special.
-2. **Profession:** From /data/professions.json.  
-   - Provides: credits, passive, abilities.
-3. **Training (School):** Pick from /data/trainings.json; select a Major (attribute+skill bonus).
-4. **Persona:** Build via card UI or presets.  
-   - Choose: background, motivation, goals, hardships, empathy, traits (pick 5, from /data/tags.json), contacts (1 positive/neutral/negative), customize appearance.
-5. **Skills:** Bump one skill (from /data/skills.json) by +1.
-6. **Superpowers:** Allocate 2 points in /data/powers.json using power tree, observing prerequisites.
-7. **Era:** Pick from /data/eras.json (Medieval, Victorian, Modern, Future).  
-   - Era affects item sets, factions, world events.
-8. **Summary & Finalize:** Full sheet review. Confirm.
+/public # Frontend assets (HTML, CSS, JS)
+/scripts # Main game logic/scripts (broken into subfolders per feature as needed)
+/data # All game data (broken into NPCs, persona, powers, professions, races, skills, trainings, etc.), all in JSON format
+/tests # Test files and coverage
+/codexlog.md # Change log for every AI/dev agent update, numbered and clear
 
-- **All steps must be navigable (forward/back).**
-- **UI is always card-based, never default forms.**
-- **No progress without fulfilling all constraints (e.g., 5 traits, 1 of each contact).**
+- All new features or modules belong in `/scripts`, with additional subfolders if the feature grows large.
+- Do **not** abbreviate folder or file names; spell out for clarity.
 
 ---
 
-## 4. GAMEPLAY LOGIC & DATA HANDLING
+## 3. CODE STYLE
 
-- **All major data is JSON, loaded at runtime.**
-- **Game state (including character sheet, NPC state, choices) = JS objects, always exportable as JSON.**
-- **No hard-coded “magic numbers”**—use only values from data files.
-- **Every action, modifier, and tag is visible in context.**  
-  (e.g., skill check DCs, bonus amounts, relationship status)
-- **No hidden logic**—everything the player or AI needs is surfaced or referenced in the schema.
-
----
-
-## 5. UI/UX STANDARDS
-
-- **Cards only** (never radio/dropdown/default input).
-- **Immediate feedback on hover, selection, and lockouts.**
-- **Counters/guards prevent excess selections** (e.g., max 5 traits).
-- **Columns:**  
-  - Traits & contacts are 3-column (positive/neutral/negative).
-  - Goals: 2-column (short/long term).
-  - All others: 1-column scrollable cards.
-- **All scrolling is within the card carousel, not the page.**
-- **Scrollbars and UI style must fit the era/theme (custom scrollbar if possible).**
+- **Indentation:** Use whatever is standard for the language (default for VS Code/Prettier is fine) – the priority is readability.
+- **Semicolons:** Use semicolons in JS.
+- **Quotes:** Single or double quotes are fine – prefer consistency.
+- **Curly Braces:** Use standard JS/ES6 formatting (same line for control structures, new line for blocks if multiline).
+- **Trailing Commas:** Optional.
+- **No abbreviations** – spell out variable and function names fully.
+- **Constants:** Use ALL_CAPS for true constants.
+- **Function Style:** Prefer small, reusable functions. Use class-based code only when it simplifies the logic.
 
 ---
 
-## 6. AI & AGENT INTEGRATION
+## 4. NAMING CONVENTIONS
 
-- **At each logic/narration step, only surface *relevant* JSON to the LLM/agent**—never the entire database.
-- **For NPC/world generation:** Compose context using the player’s current sheet, era, scene, and revealed NPC tags only.
-- **For narration:**  
-  - Use persona, mood, skills, and tags to flavor output.
-  - Respect context (e.g., a stoic vs. flamboyant character gets different prose).
-- **Skill checks:**  
-  - Parse player intent, resolve with skill+attribute, narrate outcome, update state via returned JSON.
-- **AI outputs:**
-  - `output.text`: Human-readable narration/response.
-  - `output.state`: JSON object describing all state changes (skills, tags, events, inventory, NPCs, etc).
+- **camelCase** for variables and functions.
+- **PascalCase** for classes.
+- **ALL_CAPS** for constants and constraint names.
+- No abbreviations in variable, function, or file names.
 
 ---
 
-## 7. EXPANDABILITY & MODDING
+## 5. DOCUMENTATION & LOGGING
 
-- **Every list (races, tags, skills, powers, professions, NPCs) must be extensible by appending to JSON.**
-- **No code rewrite should be needed to add new content or expand mechanics.**
-- **All data, states, and outcomes must be importable/exportable as JSON for sharing, modding, and backups.**
-
----
-
-## 8. EXAMPLE TASK PROMPTS (for Codex/GPT/Agent)
-
-- “Display all available powers from powers.json as cards, lock out any with unmet prerequisites or insufficient points.”
-- “If 5 traits are already selected, unselect the oldest when a new one is chosen.”
-- “Generate an NPC using tags: [role: ‘Captain’, faction: ‘Rebels’, mood: ‘Paranoid’]. Output in NPC schema.”
-- “Narrate a market scene for a character with traits [Stoic, Ruthless], using the current Era: Victorian, and their contacts list.”
+- **No formal JSDoc/docstrings required.**
+- **Instead:** After every feature/error fix or refactor, add a human-readable summary to `codexlog.md`, numbered and in plain English.
+  - Example:  
+    ```
+    23. Fixed NPC tag assignment bug in persona builder.
+    24. Added support for multiple NPC archetypes in /data/npcs.json.
+    ```
 
 ---
 
-## 9. RULES OF CLARITY & STYLE
+## 6. TESTING
 
-- **Favor explicitness and transparency over cleverness or brevity.**
-- **Document any new rules, tags, or mechanics in the appropriate JSON and in AGENTS.md.**
-- **Make all instructions clear for both human and AI contributors.**
-- **If any ambiguity arises, prioritize: clarity > extensibility > style > cleverness.**
+- Tests live in the `/tests` folder.
+- Any function/module that is critical or complex should have a test.
+- If unsure about framework, default to minimal hand-written tests in JS (Jest or native assertions).
+- Test coverage: Focus on main game logic, tag assignment, and JSON loading/parsing.
 
 ---
 
-*This document is both the spec and style guide for all contributors, human or AI.
-Update it alongside any major system change.*
+## 7. ERROR HANDLING
 
-## 10. Recent Updates
+- Use `console.log()` for all error outputs; do **not** throw or crash on errors unless absolutely necessary.
+- Error messages should be plain strings, human-readable, and explain what failed.
 
-- Added a Summary step at the end of character creation. `displayCharacterSheet()`
-  renders the player's full selections in boxed sections and is triggered after
-  choosing an Era.
-- Introduced custom neon scrollbars and fixed positioning for navigation headers
-  and action buttons. Containers use `.summary-container` and `.summary-section`
-  styles for the summary screen.
+---
 
+## 8. LINTING
+
+- No strict linter enforced yet; follow standard VS Code/Prettier defaults.
+- If a linter is recommended, Codex should suggest it in `codexlog.md` and require user approval before adding.
+
+---
+
+## 9. GIT/GITHUB WORKFLOW
+
+- All major features/fixes should be developed in their own branch or Codex thread and merged after verification.
+- Each logical unit of work = one branch/thread.
+- All commits/PRs should be clear and descriptive (no auto-generated messages).
+- If a new npm package is required, **Codex must suggest and request approval before installing.**
+- **Every added package must be listed in `codexlog.md`** with a one-line reason for its addition.
+
+---
+
+## 10. DEPENDENCY MANAGEMENT
+
+- All environment variables (API keys, secrets, etc.) are referenced as placeholders (e.g., `OPENAI_API_KEY`) in the code and never stored in code or JSON.
+- The local `.env` file stores real values and is listed in `.gitignore`.
+- If an env var is needed, Codex should add a placeholder and document it in the log.
+
+---
+
+## 11. CODE REUSE & DRY
+
+- Avoid repeated logic; prefer extracting shared helpers/utilities in `/scripts/utils/` or similar.
+- Always prefer one source of truth for any data or business rule.
+
+---
+
+## 12. UI/UX
+
+- All UI is card-based, futuristic, clean, blue-highlight theme with expanding/collapsible cards.
+- No default browser forms or dropdowns; all selections and interactions use custom cards/components.
+- Immediate hover/select feedback, and all navigation must feel snappy and clear.
+- No formal accessibility standard required for now (private testing), but keep interfaces clear and navigable.
+
+---
+
+## 13. DATA & EXTENSIBILITY
+
+- All game content, mechanics, and features should be **data-driven via JSON**.
+- Content files must be human-readable and code-usable.
+- Do not hardcode content or configuration unless absolutely unavoidable.
+- Expanding content: Always verify all necessary fields exist in JSON before coding new features.
+- Adding new content: Update JSON first, then update relevant code to support/consume the new data.
+
+---
+
+## 14. MODDING & EXPORTING
+
+- All game state, config, and data must be importable/exportable as JSON for backups, modding, or sharing.
+- No hidden logic – all outcomes and rules must be visible in code or data files.
+
+---
+
+## 15. SUMMARY
+
+- **Prioritize readability, modularity, and explicit logs.**
+- **Every change or decision should be documented in `codexlog.md`.**
+- **Favor explicit, verbose, and human-readable over clever or obscure code.**
+- **Every new file, feature, or dependency must be described in the log.**
