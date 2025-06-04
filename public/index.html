@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Infinite Ages - Main Game</title>
-  <link rel="stylesheet" href="/Game/css/styles.css">
+  <link rel="stylesheet" href="Game/css/styles.css">
 </head>
 <body>
   <main id="game-container">
@@ -12,7 +12,7 @@
     </div>
   </main>
   <button id="reset-save-btn" style="display:none;">Reset Saved Character</button>
-  <script type="module" src="/Game/scripts/gamestate.js"></script>
+  <script type="module" src="Game/scripts/gamestate.js"></script>
   <script type="module">
     const resetBtn = document.getElementById('reset-save-btn');
     if (localStorage.getItem('currentCharacter')) {
