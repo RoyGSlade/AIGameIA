@@ -5,7 +5,10 @@ import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 
-const schemaPath = join(dirname(fileURLToPath(import.meta.url)), '../schema.json');
+const schemaPath = join(
+  dirname(fileURLToPath(import.meta.url)),
+  '../public/Game/data/schema/schema.json'
+);
 const schema = JSON.parse(readFileSync(schemaPath, 'utf8'));
 
 global.localStorage = {
