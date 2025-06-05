@@ -2,7 +2,7 @@
 
 **Version:** 1.0  
 **Maintainer:** Donaven  
-**Last Updated:** [Fill in date]
+**Last Updated:** 2025-06-05
 
 
 ---
@@ -22,13 +22,25 @@ After completing any task, summarize the actions and changes taken as a numbered
 
 ## 2. FILE & FOLDER ORGANIZATION
 
-/public # Frontend assets (HTML, CSS, JS)
-/scripts # Main game logic/scripts (broken into subfolders per feature as needed)
-/data # All game data (broken into NPCs, persona, powers, professions, races, skills, trainings, etc.), all in JSON format
-/tests # Test files and coverage
-/codexlog.md # Change log for every AI/dev agent update, numbered and clear
+- `/server.js` – Express server that serves static files and API endpoints.
+- `/public` – Frontend assets.
+  - `index.html` – Loads the main game container.
+  - `/Game` – All game UI and data.
+    - `character-creation.html` – Standalone character builder page.
+    - `/css` – Stylesheets for the UI.
+    - `/scripts` – Browser-side JavaScript modules.
+    - `/data` – Game data in JSON format.
+      - `character creation` – Races, professions, trainings, skills, powers, persona presets.
+      - `EngineRules` – Advanced skill or rule definitions.
+      - `npc` – NPC archetypes and roles.
+      - `schema` – Schema file defining current data version.
+- `/tests` – Node based tests for critical functions.
+- `/node_modules` – Installed dependencies (managed by npm).
+- `package.json` and `package-lock.json` – Node project metadata.
+- `codexlog.md` – Sequential log of all code changes.
+- `AGENTS.md` and `SYSTEM_SPEC.md` – Rules for agents and coding standards.
 
-- All new features or modules belong in `/scripts`, with additional subfolders if the feature grows large.
+- When new features grow large, create subfolders under `/public/Game/scripts` or `/public/Game/data` as appropriate.
 - Do **not** abbreviate folder or file names; spell out for clarity.
 
 ---
