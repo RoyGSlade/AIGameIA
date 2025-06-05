@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { saveCharacter, loadCharacter, clearSavedCharacter } from '../Game/scripts/saveManager.js';
+import { saveCharacter, loadCharacter, clearSavedCharacter } from '../public/Game/scripts/saveManager.js';
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';

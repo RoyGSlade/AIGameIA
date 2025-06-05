@@ -16,7 +16,7 @@ const __dirname = path.dirname(__filename);
 
 // Directories for static assets
 const PUBLIC_DIR = path.join(__dirname, 'public');
-const GAME_DIR = path.join(__dirname, 'Game');
+const GAME_DIR = path.join(PUBLIC_DIR, 'Game');
 
 app.use(cors());
 app.use(express.json());
