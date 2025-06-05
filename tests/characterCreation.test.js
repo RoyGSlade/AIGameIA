@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 global.window = {};
-const { gameData, character, selectTraining } = await import('../Game/scripts/characterCreation.js');
+const { gameData, character, selectTraining } = await import('../public/Game/scripts/characterCreation.js');
 
 test('selectTraining applies training and major correctly', () => {
   const mockTraining = { name: 'Mock Academy', armorRating: 5, initiative: 2 };
