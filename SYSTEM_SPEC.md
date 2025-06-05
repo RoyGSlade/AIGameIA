@@ -30,7 +30,7 @@ After completing any task, summarize the actions and changes taken as a numbered
     - `/css` – Stylesheets for the UI.
     - `/scripts` – Browser-side JavaScript modules.
     - `/data` – Game data in JSON format.
-      - `character creation` – Races, professions, trainings, skills, powers, persona presets.
+      - `character-creation` – Races, professions, trainings, skills, powers, persona presets.
       - `EngineRules` – Advanced skill or rule definitions.
       - `npc` – NPC archetypes and roles.
       - `schema` – Schema file defining current data version.

@@ -19,3 +19,5 @@
 15. Updated dataUtils to return a relative path when loaded from the filesystem so character creation JSON loads correctly without a web server. Adjusted tests to match. All tests pass.
 16. Reworked dataUtils to resolve paths relative to the script and added a JSON import fallback for file:// pages. Updated tests for new path logic.
 17. Improved JSON import fallback in dataUtils to work with both "with" and "assert" syntaxes so persona presets load in newer Node versions. All tests pass.
+18. Added README with instructions to start the server before loading game pages and inserted a file:// warning script in character-creation.html.
+19. Renamed character creation data folder to `character-creation` to avoid URL encoding issues. Updated dataUtils path, tests, and SYSTEM_SPEC. All tests pass.

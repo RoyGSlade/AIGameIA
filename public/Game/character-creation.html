@@ -23,5 +23,10 @@
     </section>
   </main>
   <script type="module" src="scripts/characterCreationUI.js"></script>
+  <script>
+    if (location.protocol === 'file:') {
+      document.body.innerHTML = '<main style="padding:2rem;text-align:center;color:white;font-family:sans-serif">Please run <code>npm start</code> and open <a href="http://localhost:3000/Game/character-creation.html">http://localhost:3000/Game/character-creation.html</a> to use the character creator.</main>';
+    }
+  </script>
 </body>
 </html>

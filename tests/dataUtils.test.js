@@ -5,5 +5,5 @@ import { resolveCharacterCreationPath } from '../public/Game/scripts/dataUtils.j
 const result = resolveCharacterCreationPath('races.json');
 
 test('resolveCharacterCreationPath points to character creation data', () => {
-  assert.ok(result.includes('/Game/data/character%20creation/races.json'));
+  assert.ok(result.includes('/Game/data/character-creation/races.json'));
 });
