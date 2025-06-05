@@ -23,3 +23,6 @@
 19. Renamed character creation data folder to `character-creation` to avoid URL encoding issues. Updated dataUtils path, tests, and SYSTEM_SPEC. All tests pass.
 
 20. Added server verification section in README with instructions to check browser console and network logs for missing JSON files.
+
+21. Added fetchJsonFile.test.js to verify dynamic import fallback when fetch fails, using node:test framework. All tests pass.
+
