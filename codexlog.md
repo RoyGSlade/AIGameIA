@@ -12,3 +12,5 @@
 11. Documented current file structure in SYSTEM_SPEC and filled in last update date. All tests still pass.
 12. Created dataUtils module to resolve character creation data paths and updated characterCreationUI.js to use it. Added test for path resolution.
 
+
+13. Fixed character creation data paths by using a constant base URL in dataUtils to avoid incorrect imports. All tests pass.
