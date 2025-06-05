@@ -24,3 +24,4 @@
 
 
 
+24. Made server port configurable via PORT env variable and updated README with instructions about overriding the default port.

@@ -7,7 +7,7 @@ import { fileURLToPath } from 'url';
 dotenv.config();
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // Resolve paths relative to this file so the server works from any cwd
 const __filename = fileURLToPath(import.meta.url);
