@@ -23,8 +23,14 @@ export async function fetchJsonFile(path) {
     console.log(`Error loading ${path}: ${err.message}`);
     try {
       const modulePath = new URL(path, import.meta.url).href;
-      const mod = await import(modulePath, { assert: { type: 'json' } });
-      return mod.default;
+      // Support both import assertion and the newer `with` syntax
+      try {
+        const mod = await import(modulePath, { with: { type: 'json' } });
+        return mod.default;
+      } catch {
+        const mod = await import(modulePath, { assert: { type: 'json' } });
+        return mod.default;
+      }
     } catch (importErr) {
       console.log(`Import fallback failed for ${path}: ${importErr.message}`);
       return null;
