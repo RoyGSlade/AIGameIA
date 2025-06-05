@@ -1,7 +1,10 @@
-export const CHARACTER_CREATION_BASE = new URL('../data/character creation/', import.meta.url);
+// Root path for all character creation JSON data. Using a fixed
+// absolute path avoids issues when the page is served from different
+// directories or nested routes.
+export const CHARACTER_CREATION_BASE = '/Game/data/character%20creation/';
 
 export function resolveCharacterCreationPath(fileName) {
-  return new URL(fileName, CHARACTER_CREATION_BASE).pathname;
+  return `${CHARACTER_CREATION_BASE}${fileName}`;
 }
 
 export async function fetchJsonFile(path) {
