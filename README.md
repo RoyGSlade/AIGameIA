@@ -19,3 +19,7 @@ http://localhost:3000/Game/character-creation.html
 ```
 
 Opening the HTML files directly from the filesystem will prevent `fetch()` from loading JSON data.
+
+## Troubleshooting
+
+If the character creator displays a message that game data could not be loaded, ensure the Express server is running on port 3000. Once the server is active, refresh the page to try again.

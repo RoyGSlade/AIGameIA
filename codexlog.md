@@ -21,3 +21,4 @@
 17. Improved JSON import fallback in dataUtils to work with both "with" and "assert" syntaxes so persona presets load in newer Node versions. All tests pass.
 18. Added README with instructions to start the server before loading game pages and inserted a file:// warning script in character-creation.html.
 19. Renamed character creation data folder to `character-creation` to avoid URL encoding issues. Updated dataUtils path, tests, and SYSTEM_SPEC. All tests pass.
+20. Added missing data detection in characterCreationUI with modal error display using new uiUtils module. Created uiUtils.test for isDataLoaded. Updated CSS with error modal styles and README troubleshooting tips.
