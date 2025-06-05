@@ -24,3 +24,4 @@
 
 
 
+24. Inserted base href tag in character-creation.html and updated CSS and script paths to absolute /Game references. Verified links load and all tests pass.
