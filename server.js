@@ -14,13 +14,17 @@ const PORT = 3000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Directories for static assets
+const PUBLIC_DIR = path.join(__dirname, 'public');
+const GAME_DIR = path.join(__dirname, 'Game');
+
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
-app.use('/Game', express.static(path.join(__dirname, 'Game')));
+app.use(express.static(PUBLIC_DIR));
+app.use('/Game', express.static(GAME_DIR));
 
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(PUBLIC_DIR, 'index.html'));
 });
 
 // Example endpoint
