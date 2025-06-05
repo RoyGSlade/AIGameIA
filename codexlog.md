@@ -8,3 +8,4 @@
 7. Updated characterCreationUI.js to fetch JSON data from /Game/data with a helper function for error logging. All tests pass.
 8. Added endpoint to serve schema.json from server and updated saveManager.js to load it correctly in browser and tests. Tests remain green.
 9. Reordered server middleware so schema.json is served before static routing to fix 404 errors.
+10. Pointed server and scripts to schema.json under /public/Game/data/schema. Updated saveManager and its test, fixed character creation JSON paths, removed unused node-fetch dependency and deleted empty creation.js. All tests pass.

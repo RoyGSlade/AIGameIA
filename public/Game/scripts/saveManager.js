@@ -2,7 +2,7 @@ let VERSION = '1.0.0';
 try {
   let data = null;
   try {
-    const url = new URL('../../schema.json', import.meta.url);
+    const url = new URL('../data/schema/schema.json', import.meta.url);
     const res = await fetch(url);
     if (res.ok) {
       data = await res.json();
@@ -14,7 +14,7 @@ try {
     const { dirname, join } = await import('path');
     const { fileURLToPath } = await import('url');
     const root = dirname(dirname(dirname(dirname(fileURLToPath(import.meta.url)))));
-    const schemaPath = join(root, 'schema.json');
+    const schemaPath = join(root, 'public', 'Game', 'data', 'schema', 'schema.json');
     data = JSON.parse(readFileSync(schemaPath, 'utf8'));
   }
   if (data && data.schemaVersion) {

@@ -26,7 +26,7 @@ async function fetchJsonFile(path) {
 }
 
 async function loadAllData() {
-  const base = '/Game/data/';
+  const base = '/Game/data/character%20creation/';
   gameData.races = await fetchJsonFile(base + 'races.json') || [];
   gameData.professions = await fetchJsonFile(base + 'professions.json') || [];
   gameData.trainings = await fetchJsonFile(base + 'trainings.json') || [];

@@ -1,7 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import fetch from 'node-fetch';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -23,7 +22,9 @@ app.use(express.json());
 
 // Serve schema.json directly before static middleware so it isn't intercepted
 app.get('/schema.json', (req, res) => {
-  res.sendFile(path.join(__dirname, 'schema.json'));
+  res.sendFile(
+    path.join(__dirname, 'public', 'Game', 'data', 'schema', 'schema.json')
+  );
 });
 
 app.use(express.static(PUBLIC_DIR));
