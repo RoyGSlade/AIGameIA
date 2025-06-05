@@ -1,10 +1,14 @@
-// Root path for all character creation JSON data. Using a fixed
-// absolute path avoids issues when the page is served from different
-// directories or nested routes.
-export const CHARACTER_CREATION_BASE = '/Game/data/character%20creation/';
+// Base path for all character creation JSON files. The path is
+// resolved relative to this script so it works whether the page is
+// served via HTTP or opened directly from the filesystem.
+const CHARACTER_CREATION_BASE = new URL('../data/character creation/', import.meta.url);
+
+export function getCharacterCreationBase() {
+  return CHARACTER_CREATION_BASE.href;
+}
 
 export function resolveCharacterCreationPath(fileName) {
-  return `${CHARACTER_CREATION_BASE}${fileName}`;
+  return new URL(fileName, CHARACTER_CREATION_BASE).href;
 }
 
 export async function fetchJsonFile(path) {
@@ -17,6 +21,13 @@ export async function fetchJsonFile(path) {
     return await res.json();
   } catch (err) {
     console.log(`Error loading ${path}: ${err.message}`);
-    return null;
+    try {
+      const modulePath = new URL(path, import.meta.url).href;
+      const mod = await import(modulePath, { assert: { type: 'json' } });
+      return mod.default;
+    } catch (importErr) {
+      console.log(`Import fallback failed for ${path}: ${importErr.message}`);
+      return null;
+    }
   }
 }

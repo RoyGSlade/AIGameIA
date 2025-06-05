@@ -16,3 +16,5 @@
 13. Fixed character creation data paths by using a constant base URL in dataUtils to avoid incorrect imports. All tests pass.
 
 14. Added extensive console logging for each step and selection in characterCreation and UI modules to help debug persona loading and selection progress. All tests pass.
+15. Updated dataUtils to return a relative path when loaded from the filesystem so character creation JSON loads correctly without a web server. Adjusted tests to match. All tests pass.
+16. Reworked dataUtils to resolve paths relative to the script and added a JSON import fallback for file:// pages. Updated tests for new path logic.
