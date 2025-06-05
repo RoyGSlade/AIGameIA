@@ -20,12 +20,14 @@ const GAME_DIR = path.join(PUBLIC_DIR, 'Game');
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static(PUBLIC_DIR));
-app.use('/Game', express.static(GAME_DIR));
 
+// Serve schema.json directly before static middleware so it isn't intercepted
 app.get('/schema.json', (req, res) => {
   res.sendFile(path.join(__dirname, 'schema.json'));
 });
+
+app.use(express.static(PUBLIC_DIR));
+app.use('/Game', express.static(GAME_DIR));
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(PUBLIC_DIR, 'index.html'));
