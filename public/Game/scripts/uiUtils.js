@@ -9,15 +9,21 @@ export function isDataLoaded(gameData, personaData) {
   );
 }
 
-export function showDataLoadError() {
+export function showDataLoadError(missingFile) {
   if (typeof document === 'undefined') return;
-  if (document.getElementById('data-error-modal')) return;
-  const modal = document.createElement('div');
-  modal.id = 'data-error-modal';
-  modal.className = 'error-modal neon-frame';
-  modal.textContent =
-    'Game data could not be loaded. Please verify the server is running and refresh this page.';
-  document.body.appendChild(modal);
+  let modal = document.getElementById('data-error-modal');
+  const message = missingFile
+    ? `Failed to load ${missingFile}. Verify the file exists and refresh this page.`
+    : 'Game data could not be loaded. Please verify the server is running and refresh this page.';
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'data-error-modal';
+    modal.className = 'error-modal neon-frame';
+    modal.textContent = message;
+    document.body.appendChild(modal);
+  } else {
+    modal.textContent = message;
+  }
 }
 
 export function verifyDataLoaded(gameData, personaData) {
