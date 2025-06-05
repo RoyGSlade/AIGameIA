@@ -12,6 +12,7 @@ import {
   fetchJsonFile,
   resolveCharacterCreationPath
 } from './dataUtils.js';
+import { verifyDataLoaded } from './uiUtils.js';
 
 let personaData = null;
 
@@ -30,6 +31,7 @@ async function loadAllData() {
   personaData = gameData.personaPresets;
   console.log('Persona presets', personaData ? 'loaded' : 'missing');
 }
+
 
 
 const content = document.getElementById('carousel-content');
@@ -55,6 +57,9 @@ let uiStep = 0;
 
 async function init() {
   await loadAllData();
+  if (!verifyDataLoaded(gameData, personaData)) {
+    return;
+  }
   uiStep = 0;
   initProgressNav();
   renderStep();
