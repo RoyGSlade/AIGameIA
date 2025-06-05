@@ -12,22 +12,33 @@ import {
   fetchJsonFile,
   resolveCharacterCreationPath
 } from './dataUtils.js';
-import { verifyDataLoaded } from './uiUtils.js';
+import { verifyDataLoaded, showDataLoadError } from './uiUtils.js';
+
+async function loadDataFile(fileName) {
+  const path = resolveCharacterCreationPath(fileName);
+  let data = await fetchJsonFile(path);
+  if (data === null) {
+    console.log(`Failed to load ${path}`);
+    showDataLoadError(path);
+    data = [];
+  }
+  return data;
+}
 
 let personaData = null;
 
 async function loadAllData() {
-  gameData.races = await fetchJsonFile(resolveCharacterCreationPath('races.json')) || [];
+  gameData.races = await loadDataFile('races.json');
   console.log('Races loaded:', gameData.races.length);
-  gameData.professions = await fetchJsonFile(resolveCharacterCreationPath('professions.json')) || [];
+  gameData.professions = await loadDataFile('professions.json');
   console.log('Professions loaded:', gameData.professions.length);
-  gameData.trainings = await fetchJsonFile(resolveCharacterCreationPath('trainings.json')) || [];
+  gameData.trainings = await loadDataFile('trainings.json');
   console.log('Trainings loaded:', gameData.trainings.length);
-  gameData.skills = await fetchJsonFile(resolveCharacterCreationPath('skills.json')) || [];
+  gameData.skills = await loadDataFile('skills.json');
   console.log('Skills loaded:', gameData.skills.length);
-  gameData.powers = await fetchJsonFile(resolveCharacterCreationPath('powers.json')) || [];
+  gameData.powers = await loadDataFile('powers.json');
   console.log('Powers loaded:', gameData.powers.length);
-  gameData.personaPresets = await fetchJsonFile(resolveCharacterCreationPath('personaPresets.json'));
+  gameData.personaPresets = await loadDataFile('personaPresets.json');
   personaData = gameData.personaPresets;
   console.log('Persona presets', personaData ? 'loaded' : 'missing');
 }
