@@ -24,8 +24,12 @@
 
 
 
+
+24. Made server port configurable via PORT env variable and updated README with instructions about overriding the default port.
+
 24. Created personaPresets.test.js to verify persona presets JSON loads with presetPersonas array.
 
 
 24. Added null checks after each fetchJsonFile call in characterCreationUI with a helper that logs missing file paths and updates the modal via showDataLoadError. Modified showDataLoadError to accept a file path so the message identifies the failed load. All tests pass.
+
 
