@@ -33,4 +33,6 @@
 
 24. Added null checks after each fetchJsonFile call in characterCreationUI with a helper that logs missing file paths and updates the modal via showDataLoadError. Modified showDataLoadError to accept a file path so the message identifies the failed load. All tests pass.
 
+28. Revised dataUtils to build root-relative paths so fetch works under Express. Updated import fallback logic and adjusted fetchJsonFile.test.js. All tests pass.
+
 
