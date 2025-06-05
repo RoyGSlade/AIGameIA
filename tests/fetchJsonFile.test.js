@@ -5,10 +5,11 @@ import { fetchJsonFile, resolveCharacterCreationPath } from '../public/Game/scri
 const jsonPath = resolveCharacterCreationPath('races.json');
 
 async function directImport(path) {
+  const filePath = new URL('../public' + path, import.meta.url).href;
   try {
-    return (await import(path, { with: { type: 'json' } })).default;
+    return (await import(filePath, { with: { type: 'json' } })).default;
   } catch {
-    return (await import(path, { assert: { type: 'json' } })).default;
+    return (await import(filePath, { assert: { type: 'json' } })).default;
   }
 }
 
