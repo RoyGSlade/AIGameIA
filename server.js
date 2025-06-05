@@ -23,6 +23,10 @@ app.use(express.json());
 app.use(express.static(PUBLIC_DIR));
 app.use('/Game', express.static(GAME_DIR));
 
+app.get('/schema.json', (req, res) => {
+  res.sendFile(path.join(__dirname, 'schema.json'));
+});
+
 app.get('/', (req, res) => {
   res.sendFile(path.join(PUBLIC_DIR, 'index.html'));
 });
