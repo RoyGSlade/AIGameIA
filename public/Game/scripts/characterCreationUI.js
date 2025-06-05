@@ -8,31 +8,20 @@ import {
   selectRace, selectProfession, selectTraining,
   playerPersona, character, setPersonaOnCharacter
 } from './characterCreation.js';
+import {
+  fetchJsonFile,
+  resolveCharacterCreationPath
+} from './dataUtils.js';
 
 let personaData = null;
 
-async function fetchJsonFile(path) {
-  try {
-    const res = await fetch(path);
-    if (!res.ok) {
-      console.log(`Failed to load ${path}: ${res.status}`);
-      return null;
-    }
-    return await res.json();
-  } catch (err) {
-    console.log(`Error loading ${path}: ${err.message}`);
-    return null;
-  }
-}
-
 async function loadAllData() {
-  const base = '/Game/data/character%20creation/';
-  gameData.races = await fetchJsonFile(base + 'races.json') || [];
-  gameData.professions = await fetchJsonFile(base + 'professions.json') || [];
-  gameData.trainings = await fetchJsonFile(base + 'trainings.json') || [];
-  gameData.skills = await fetchJsonFile(base + 'skills.json') || [];
-  gameData.powers = await fetchJsonFile(base + 'powers.json') || [];
-  gameData.personaPresets = await fetchJsonFile(base + 'personaPresets.json');
+  gameData.races = await fetchJsonFile(resolveCharacterCreationPath('races.json')) || [];
+  gameData.professions = await fetchJsonFile(resolveCharacterCreationPath('professions.json')) || [];
+  gameData.trainings = await fetchJsonFile(resolveCharacterCreationPath('trainings.json')) || [];
+  gameData.skills = await fetchJsonFile(resolveCharacterCreationPath('skills.json')) || [];
+  gameData.powers = await fetchJsonFile(resolveCharacterCreationPath('powers.json')) || [];
+  gameData.personaPresets = await fetchJsonFile(resolveCharacterCreationPath('personaPresets.json'));
   personaData = gameData.personaPresets;
   console.log('personaData loaded:', personaData);
 }
