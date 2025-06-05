@@ -23,5 +23,14 @@
 23. Added fetchJsonFile.test.js to verify dynamic import fallback when fetch fails, using node:test framework. All tests pass.
 
 
-
 24. Inserted base href tag in character-creation.html and updated CSS and script paths to absolute /Game references. Verified links load and all tests pass.
+
+
+24. Made server port configurable via PORT env variable and updated README with instructions about overriding the default port.
+
+24. Created personaPresets.test.js to verify persona presets JSON loads with presetPersonas array.
+
+
+24. Added null checks after each fetchJsonFile call in characterCreationUI with a helper that logs missing file paths and updates the modal via showDataLoadError. Modified showDataLoadError to accept a file path so the message identifies the failed load. All tests pass.
+
+
