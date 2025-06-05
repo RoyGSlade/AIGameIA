@@ -1,7 +1,8 @@
 // Base path for all character creation JSON files. The path is
 // resolved relative to this script so it works whether the page is
 // served via HTTP or opened directly from the filesystem.
-const CHARACTER_CREATION_BASE = new URL('../data/character creation/', import.meta.url);
+// Updated path uses a hyphen to avoid issues with spaces in URLs
+const CHARACTER_CREATION_BASE = new URL('../data/character-creation/', import.meta.url);
 
 export function getCharacterCreationBase() {
   return CHARACTER_CREATION_BASE.href;
