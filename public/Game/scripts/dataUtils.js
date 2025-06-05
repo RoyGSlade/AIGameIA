@@ -1,15 +1,14 @@
-// Base path for all character creation JSON files. The path is
-// resolved relative to this script so it works whether the page is
-// served via HTTP or opened directly from the filesystem.
-// Updated path uses a hyphen to avoid issues with spaces in URLs
-const CHARACTER_CREATION_BASE = new URL('../data/character-creation/', import.meta.url);
+// Base path for all character creation JSON files.
+// Using a root-relative HTTP path ensures fetch() works when assets
+// are served via the Express/static server.
+const CHARACTER_CREATION_BASE = '/Game/data/character-creation/';
 
 export function getCharacterCreationBase() {
-  return CHARACTER_CREATION_BASE.href;
+  return CHARACTER_CREATION_BASE;
 }
 
 export function resolveCharacterCreationPath(fileName) {
-  return new URL(fileName, CHARACTER_CREATION_BASE).href;
+  return `${CHARACTER_CREATION_BASE}${fileName}`;
 }
 
 export async function fetchJsonFile(path) {
@@ -23,7 +22,8 @@ export async function fetchJsonFile(path) {
   } catch (error) {
     console.log(`Error loading ${path}: ${error.message}`);
     try {
-      const modulePath = new URL(path, import.meta.url).href;
+      // Build a file path relative to this script for Node environments.
+      const modulePath = new URL('..' + path.replace('/Game', ''), import.meta.url).href;
       // Support both import assertion and the newer `with` syntax
       try {
         const module = await import(modulePath, { with: { type: 'json' } });
