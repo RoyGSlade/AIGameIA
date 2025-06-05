@@ -14,26 +14,26 @@ export function resolveCharacterCreationPath(fileName) {
 
 export async function fetchJsonFile(path) {
   try {
-    const res = await fetch(path);
-    if (!res.ok) {
-      console.log(`Failed to load ${path}: ${res.status}`);
+    const response = await fetch(path);
+    if (!response.ok) {
+      console.log(`Failed to load ${path}: ${response.status}`);
       return null;
     }
-    return await res.json();
-  } catch (err) {
-    console.log(`Error loading ${path}: ${err.message}`);
+    return await response.json();
+  } catch (error) {
+    console.log(`Error loading ${path}: ${error.message}`);
     try {
       const modulePath = new URL(path, import.meta.url).href;
       // Support both import assertion and the newer `with` syntax
       try {
-        const mod = await import(modulePath, { with: { type: 'json' } });
-        return mod.default;
+        const module = await import(modulePath, { with: { type: 'json' } });
+        return module.default;
       } catch {
-        const mod = await import(modulePath, { assert: { type: 'json' } });
-        return mod.default;
+        const module = await import(modulePath, { assert: { type: 'json' } });
+        return module.default;
       }
-    } catch (importErr) {
-      console.log(`Import fallback failed for ${path}: ${importErr.message}`);
+    } catch (importError) {
+      console.log(`Import fallback failed for ${path}: ${importError.message}`);
       return null;
     }
   }
