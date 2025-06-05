@@ -3,9 +3,9 @@ try {
   let data = null;
   try {
     const url = new URL('../data/schema/schema.json', import.meta.url);
-    const res = await fetch(url);
-    if (res.ok) {
-      data = await res.json();
+    const response = await fetch(url);
+    if (response.ok) {
+      data = await response.json();
     }
   } catch { /* fetch may fail in non-browser environment */ }
 
@@ -20,8 +20,8 @@ try {
   if (data && data.schemaVersion) {
     VERSION = data.schemaVersion;
   }
-} catch (err) {
-  console.log('Could not load schema.json:', err.message);
+} catch (error) {
+  console.log('Could not load schema.json:', error.message);
 }
 
 const STORAGE_KEY = 'currentCharacter';
