@@ -17,13 +17,18 @@ let personaData = null;
 
 async function loadAllData() {
   gameData.races = await fetchJsonFile(resolveCharacterCreationPath('races.json')) || [];
+  console.log('Races loaded:', gameData.races.length);
   gameData.professions = await fetchJsonFile(resolveCharacterCreationPath('professions.json')) || [];
+  console.log('Professions loaded:', gameData.professions.length);
   gameData.trainings = await fetchJsonFile(resolveCharacterCreationPath('trainings.json')) || [];
+  console.log('Trainings loaded:', gameData.trainings.length);
   gameData.skills = await fetchJsonFile(resolveCharacterCreationPath('skills.json')) || [];
+  console.log('Skills loaded:', gameData.skills.length);
   gameData.powers = await fetchJsonFile(resolveCharacterCreationPath('powers.json')) || [];
+  console.log('Powers loaded:', gameData.powers.length);
   gameData.personaPresets = await fetchJsonFile(resolveCharacterCreationPath('personaPresets.json'));
   personaData = gameData.personaPresets;
-  console.log('personaData loaded:', personaData);
+  console.log('Persona presets', personaData ? 'loaded' : 'missing');
 }
 
 
@@ -53,18 +58,21 @@ async function init() {
   uiStep = 0;
   initProgressNav();
   renderStep();
+  console.log('Character creation UI initialized');
 }
 
 nextBtn.onclick = () => {
   nextStep();
   uiStep++;
   renderStep();
+  console.log('Next button clicked, step now', uiStep);
 };
 prevBtn.onclick = () => {};
 stepBackBtn.onclick = () => {
   prevStep();
   uiStep--;
   renderStep();
+  console.log('Back to step', uiStep);
 };
 
 function renderStep() {
@@ -75,6 +83,7 @@ function renderStep() {
   stepBackBtn.style.display = uiStep === 0 ? 'none' : 'inline-block';
   trainingPanel.style.display = uiStep === 2 ? 'block' : 'none';
   updateProgressNav(uiStep);
+  console.log(`Rendering step ${uiStep}`);
   switch (uiStep) {
     case 0: displayRaceStep(); break;
     case 1: displayProfessionStep(); break;
@@ -305,6 +314,7 @@ let selectedPreset = null;
 window.displayPersonaStep = function () {
   content.innerHTML = '';
   prompt.textContent = "Would you like to use a persona preset or build your own?";
+  console.log('Persona step start', { loaded: !!personaData });
 
   const usePresetBtn = document.createElement('button');
   usePresetBtn.textContent = "Use a Preset";
