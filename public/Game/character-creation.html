@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <base href="/">
   <title>Infinite Ages: Character Creation</title>
-  <link rel="stylesheet" href="css/characterCreation.css">
+  <link rel="stylesheet" href="/Game/css/characterCreation.css">
 </head>
 <body>
   <div id="creation-bg"></div>
@@ -22,7 +23,7 @@
       <p id="prompt-text"></p>
     </section>
   </main>
-  <script type="module" src="scripts/characterCreationUI.js"></script>
+  <script type="module" src="/Game/scripts/characterCreationUI.js"></script>
   <script>
     if (location.protocol === 'file:') {
       document.body.innerHTML = '<main style="padding:2rem;text-align:center;color:white;font-family:sans-serif">Please run <code>npm start</code> and open <a href="http://localhost:3000/Game/character-creation.html">http://localhost:3000/Game/character-creation.html</a> to use the character creator.</main>';
