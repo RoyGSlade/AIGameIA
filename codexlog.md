@@ -5,3 +5,4 @@
 
 5. Updated server static path to /public/Game and fixed test imports after moving files. All tests pass.
 6. Verified character creation HTML references local assets correctly and ensured tests pass.
+7. Updated characterCreationUI.js to fetch JSON data from /Game/data with a helper function for error logging. All tests pass.

@@ -11,15 +11,30 @@ import {
 
 let personaData = null;
 
+async function fetchJsonFile(path) {
+  try {
+    const res = await fetch(path);
+    if (!res.ok) {
+      console.log(`Failed to load ${path}: ${res.status}`);
+      return null;
+    }
+    return await res.json();
+  } catch (err) {
+    console.log(`Error loading ${path}: ${err.message}`);
+    return null;
+  }
+}
+
 async function loadAllData() {
-  gameData.races = await (await fetch('./data/races.json')).json();
-  gameData.professions = await (await fetch('./data/professions.json')).json();
-  gameData.trainings = await (await fetch('./data/trainings.json')).json();
-  gameData.skills = await (await fetch('./data/skills.json')).json();
-  gameData.powers = await (await fetch('./data/powers.json')).json();
-  gameData.personaPresets = await (await fetch('./data/personaPresets.json')).json();
+  const base = '/Game/data/';
+  gameData.races = await fetchJsonFile(base + 'races.json') || [];
+  gameData.professions = await fetchJsonFile(base + 'professions.json') || [];
+  gameData.trainings = await fetchJsonFile(base + 'trainings.json') || [];
+  gameData.skills = await fetchJsonFile(base + 'skills.json') || [];
+  gameData.powers = await fetchJsonFile(base + 'powers.json') || [];
+  gameData.personaPresets = await fetchJsonFile(base + 'personaPresets.json');
   personaData = gameData.personaPresets;
-  console.log("personaData loaded:", personaData);
+  console.log('personaData loaded:', personaData);
 }
 
 
