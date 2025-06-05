@@ -14,3 +14,5 @@
 
 
 13. Fixed character creation data paths by using a constant base URL in dataUtils to avoid incorrect imports. All tests pass.
+
+14. Added extensive console logging for each step and selection in characterCreation and UI modules to help debug persona loading and selection progress. All tests pass.

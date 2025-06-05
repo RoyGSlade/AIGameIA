@@ -92,6 +92,23 @@ export function resetPersona() {
   };
 }
 
+export function getProgressSummary() {
+  return {
+    race: character.race ? character.race.name : null,
+    profession: character.profession ? character.profession.name : null,
+    training: character.training ? character.training.name : null,
+    major: character.major,
+    era: character.era,
+    skills: character.skillChoices.map(s => `${s.name} Lv${s.level}`),
+    powers: character.superpowers.map(p => `${p.tree}:${p.power}`),
+    personaLoaded: Object.keys(character.persona || {}).length > 0
+  };
+}
+
+export function logCharacterProgress(action) {
+  console.log(`[Progress] ${action}`, getProgressSummary());
+}
+
 // --- Step Navigation ---
 export function nextStep() { currentStep++; }
 export function prevStep() { if (currentStep > 0) currentStep--; }
@@ -102,6 +119,7 @@ export function displayRaceStep() {
     `Step 1: Choose a race. Race sets movement, vision, resistance, age range, attribute bonus, skill, and possibly a special ability.`
   );
   window.displayRaceCarousel(gameData.races);
+  logCharacterProgress('Displaying race step');
 }
 
 export function selectRace(raceName, selectedAge, selectedSkill) {
@@ -118,6 +136,7 @@ export function selectRace(raceName, selectedAge, selectedSkill) {
   }
   if (selectedSkill) addOrLevelSkill(selectedSkill, 1);
   character.specialAbility = race.special || null;
+  logCharacterProgress(`Selected race: ${raceName}`);
 }
 
 // --- STEP 2: Profession ---
@@ -126,6 +145,7 @@ export function displayProfessionStep() {
     `Step 2: Choose a profession. Profession sets your credits, passive ability, and earned abilities.`
   );
   window.displayProfessionCarousel(gameData.professions);
+  logCharacterProgress('Displaying profession step');
 }
 
 export function selectProfession(profName) {
@@ -135,6 +155,7 @@ export function selectProfession(profName) {
   character.credits = prof.startingCredits;
   character.passive = prof.passive;
   character.earnedAbilities = prof.abilities || [];
+  logCharacterProgress(`Selected profession: ${profName}`);
 }
 
 // --- STEP 3: Training ---
@@ -143,6 +164,7 @@ export function displayTrainingStep() {
     `Step 3: Choose your training (school). Sets armor rating, initiative, HP, gives an attribute bonus and a skill bump.`
   );
   window.displayTrainingCarousel(gameData.trainings);
+  logCharacterProgress('Displaying training step');
 }
 export function selectTraining(trainingName, majorName, majorAttribute, skillBump) {
   const train = gameData.trainings.find(t => t.name === trainingName);
@@ -154,6 +176,7 @@ export function selectTraining(trainingName, majorName, majorAttribute, skillBum
   character.major = majorName;
   if (majorAttribute) character.attributes[majorAttribute] += 1;
   if (skillBump) addOrLevelSkill(skillBump, 1);
+  logCharacterProgress(`Selected training: ${trainingName} with major ${majorName}`);
 }
 
 // --- STEP 4: Persona ---
@@ -164,6 +187,7 @@ export function displayPersonaStep() {
     `Step 4: Build your persona. Answer questions or use a preset: background, motivation, hardships, goals, empathy, traits, contacts, appearance.`
   );
   window.displayPersonaBuilder(gameData.personaPresets); // UI passes personaData json
+  logCharacterProgress('Displaying persona step');
 }
 
 // Track field changes in persona builder (for custom input)
@@ -178,6 +202,7 @@ export function setPersonaField(field, value) {
   } else {
     playerPersona[field] = value;
   }
+  logCharacterProgress(`Updated persona field: ${field}`);
 }
 
 // Load a full preset persona (overwrites all)
@@ -189,12 +214,14 @@ export function loadPresetPersona(preset) {
       playerPersona[field] = preset[field];
     }
   });
+  logCharacterProgress(`Loaded preset persona: ${preset.name || 'unnamed'}`);
 }
 
 // Finalize persona on character (call at end of persona step)
 export function setPersonaOnCharacter(skillToBump = null) {
   character.persona = JSON.parse(JSON.stringify(playerPersona));
   if (skillToBump) addOrLevelSkill(skillToBump, 1);
+  logCharacterProgress('Persona finalized');
 }
 
 // --- STEP 5: Skills (just info step, handled by UI) ---
@@ -203,6 +230,7 @@ export function displaySkillSystemStep() {
     `Step 5: Select a starting skill.`
   );
   window.displaySkillSelection(gameData.skills);
+  logCharacterProgress('Displaying skill selection step');
 }
 
 // --- STEP 6: Superpowers ---
@@ -211,6 +239,7 @@ export function displaySuperpowerStep() {
     `Step 6: Superpowers. If your game uses them, select a power. You get 2 points at level 1.`
   );
   window.displayPowerCarousel(gameData.powers);
+  logCharacterProgress('Displaying superpower step');
 }
 export function selectSuperpower(treeName, powerObj) {
   const tree = gameData.powers.find(p => p.name === treeName);
@@ -222,6 +251,7 @@ export function selectSuperpower(treeName, powerObj) {
     level: powerObj.level
   });
   character.powerPoints += powerObj.level;
+  logCharacterProgress(`Selected superpower ${powerObj.power} from ${treeName}`);
 }
 
 // --- STEP 7: Era ---
@@ -230,21 +260,25 @@ export function displayEraStep() {
     `Step 7: Choose your era: Victorian, Modern, Cyberpunk, or Firefly/Star Trek.`
   );
   window.displayEraSelector();
+  logCharacterProgress('Displaying era step');
 }
 export function selectEra(era) {
   character.era = era;
+  logCharacterProgress(`Selected era: ${era}`);
 }
 
 // --- STEP 8: Summary ---
 export function displaySummaryStep() {
   showPrompt(`Step 8: Review your choices. This is your character sheet. If satisfied, confirm.`);
   window.displayCharacterSheet(character);
+  logCharacterProgress('Displaying summary step');
 }
 export function finalizeCharacter() {
   character.inspiration = true;
   persistCharacter(character);
   showPrompt(`You gain inspiration for completing character creation. Let's play!`);
   if (window.parent && window.parent.setState) window.parent.setState('mainGame');
+  logCharacterProgress('Character creation complete');
 }
 
 // --- Helpers ---
@@ -257,10 +291,12 @@ function addOrLevelSkill(skillName, level) {
 
 export function selectStartingSkill(skillName) {
   addOrLevelSkill(skillName, 1);
+  logCharacterProgress(`Selected starting skill: ${skillName}`);
 }
 
 export function resetSavedCharacter() {
   clearSavedCharacter();
+  logCharacterProgress('Saved character reset');
 }
 
 // UI helper stubs (will be overwritten by UI file)
